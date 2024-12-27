@@ -6,7 +6,7 @@ import org.leralix.tancommon.commands.SubCommand;
 
 import java.util.Collections;
 import java.util.List;
-public class UpdateChunks extends SubCommand {
+public class UpdateChunksCommand extends SubCommand {
     @Override
     public String getName() {
         return "update";

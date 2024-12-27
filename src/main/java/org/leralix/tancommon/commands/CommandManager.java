@@ -3,7 +3,7 @@ package org.leralix.tancommon.commands;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.leralix.tan.storage.stored.PlayerDataStorage;
-import org.leralix.tancommon.commands.subcommands.UpdateChunks;
+import org.leralix.tancommon.commands.subcommands.UpdateChunksCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class CommandManager implements CommandExecutor, TabExecutor, TabComplete
     private final ArrayList<SubCommand> subCommands = new ArrayList<>();
 
     public CommandManager(){
-        subCommands.add(new UpdateChunks());
+        subCommands.add(new UpdateChunksCommand());
 
     }
 

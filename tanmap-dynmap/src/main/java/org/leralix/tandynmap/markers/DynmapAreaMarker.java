@@ -3,6 +3,8 @@ package org.leralix.tandynmap.markers;
 import org.dynmap.markers.AreaMarker;
 import org.leralix.tancommon.markers.CommonAreaMarker;
 
+import java.util.Arrays;
+
 public class DynmapAreaMarker implements CommonAreaMarker {
 
     AreaMarker areaMarker;
@@ -12,6 +14,7 @@ public class DynmapAreaMarker implements CommonAreaMarker {
 
     @Override
     public void setCornerLocations(double[] x, double[] z) {
+        System.out.println("DynmapAreaMarker setCornerLocations : " + Arrays.toString(x) + " " + Arrays.toString(z));
         areaMarker.setCornerLocations(x, z);
     }
 

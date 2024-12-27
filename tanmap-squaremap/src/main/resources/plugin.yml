@@ -1,7 +1,7 @@
 name: tanmap-squaremap
 version: '${version}'
 main: org.leralix.tansquaremap.TownsAndNationsSquaremap
-api-version: '1.20'
+api-version: '1.19'
 depend:  [TownsAndNations, squaremap]
 commands:
   tanmap:

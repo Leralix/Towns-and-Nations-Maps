@@ -11,7 +11,6 @@ import org.leralix.tan.dataclass.territory.TerritoryData;
 import org.leralix.tan.dataclass.territory.TownData;
 import org.leralix.tancommon.markers.CommonAreaMarker;
 import org.leralix.tancommon.markers.CommonMarkerSet;
-import org.leralix.tancommon.event.RegionRenderEvent;
 import org.leralix.tancommon.event.TownRenderEvent;
 import org.leralix.tancommon.style.AreaStyle;
 
@@ -105,11 +104,7 @@ public class ChunkManager {
             }
             claimedChunksToDraw = townBlockLeftToDraw; /* Replace list (null if no more to process) */
             if(ourShape != null) {
-                try {
-                    polyIndex = traceTerritoryOutline(townData, newWorldNameAreaMarkerMap, polyIndex, infoWindowPopup, currentWorld.getName(), ourShape, minx, minz);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                polyIndex = traceTerritoryOutline(townData, newWorldNameAreaMarkerMap, polyIndex, infoWindowPopup, currentWorld.getName(), ourShape, minx, minz);
             }
         }
 
@@ -304,21 +299,16 @@ public class ChunkManager {
             x[i] = (double)line[0] * (double)16;
             z[i] = (double)line[1] * (double)16;
         }
-        /* Find existing one */
-        CommonAreaMarker areaMarker = existingAreaMarkers.remove(polyid);
+        CommonAreaMarker areaMarker = existingAreaMarkers.get(polyid);
         if(areaMarker == null) {
-            areaMarker = set.createAreaMarker(polyid, territoryData.getName(), false, worldName, x, z, territoryData.getChunkColor().getColor(), infoWindowPopup);
+            //areaMarker = set.findAreaMarker(polyid);
             if(areaMarker == null) {
-                areaMarker = set.findAreaMarker(polyid);
-                if (areaMarker == null) {
-                    return polyIndex;
-                }
+                areaMarker = set.createAreaMarker(polyid, territoryData.getName(), false, worldName, x, z, territoryData.getChunkColor().getColor(), infoWindowPopup);
             }
         }
-        else {
-            areaMarker.setCornerLocations(x, z);
-            areaMarker.setLabel(territoryData.getName());
-        }
+
+        areaMarker.setCornerLocations(x, z);
+        areaMarker.setLabel(territoryData.getName());
         addStyle(territoryData, areaMarker);
 
         /* Fire an event allowing other plugins to alter the AreaMarker */

@@ -44,7 +44,7 @@ public class UpdateChunks implements Runnable {
             TownDescriptionStorage.add(townDescription);
         }
 
-        for(RegionData regionData : RegionDataStorage.getAllRegions()){
+        for(RegionData regionData : RegionDataStorage.getAll()){
             RegionDescription regionDescription = new RegionDescription(regionData);
             RegionDescriptionStorage.add(regionDescription);
         }
@@ -54,7 +54,7 @@ public class UpdateChunks implements Runnable {
             chunkManager.updateTown(townData, chunkMap);
         }
 
-        for(RegionData regionData : RegionDataStorage.getAllRegions()){
+        for(RegionData regionData : RegionDataStorage.getAll()){
             chunkManager.updateRegion(regionData, chunkMap);
         }
 

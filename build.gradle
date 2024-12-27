@@ -16,7 +16,7 @@ subprojects {
 
 allprojects {
     group = 'org.leralix'
-    version = '0.10.0'
+    version = '0.10.1'
 
     repositories {
         mavenCentral()
@@ -35,7 +35,7 @@ allprojects {
 
     dependencies {
         compileOnly "org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT"
-        compileOnly name: 'Towns_and_Nations-0.11.8'
+        compileOnly name: 'Towns_and_Nations-0.12.1'
     }
 
     def targetJavaVersion = 17

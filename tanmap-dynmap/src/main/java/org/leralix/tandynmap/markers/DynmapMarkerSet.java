@@ -31,19 +31,33 @@ public class DynmapMarkerSet extends CommonMarkerSet {
 
     @Override
     public CommonMarker createLandmark(Landmark landmark, String name, String worldName, int x, int y, int z, boolean b) {
-        Marker marker = markerSet.createMarker(landmark.getID(), name, worldName, x, y, z, markerAPI.getMarkerIcon("diamond"), b);
+        Marker marker = markerSet.findMarker(landmark.getID());
+        if (marker != null) {
+            marker.deleteMarker();
+        }
+
+        marker = markerSet.createMarker(landmark.getID(), name, worldName, x, y, z, markerAPI.getMarkerIcon("diamond"), b);
         marker.setDescription(generateDescription(landmark));
         return new DynmapMarker(marker);
+
     }
 
     @Override
     public CommonAreaMarker findAreaMarker(String polyID) {
         AreaMarker areaMarker = markerSet.findAreaMarker(polyID);
+        if(areaMarker == null){
+            return null;
+        }
         return new DynmapAreaMarker(areaMarker);
     }
 
     @Override
     public CommonAreaMarker createAreaMarker(String polyID, String name, boolean b, String worldName, double[] x, double[] z, Color color, String description) {
+        AreaMarker areaMarker = markerSet.findAreaMarker(polyID);
+        if(areaMarker != null){
+            areaMarker.deleteMarker();
+        }
+
         AreaMarker marker = markerSet.createAreaMarker(polyID, name, b, worldName, x, z, false);
         marker.setDescription(description);
         return new DynmapAreaMarker(marker);
