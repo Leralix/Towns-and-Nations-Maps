@@ -33,6 +33,7 @@ public class ChunkManager {
     }
 
     public void updateTown(TownData townData, Map<String, CommonAreaMarker> newWorldNameAreaMarkerMap) {
+        set.deleteAllMarkers();
 
         int polyIndex = 0; /* Index of polygon for when a town has multiple shapes. */
 
@@ -111,7 +112,7 @@ public class ChunkManager {
     }
 
     public void updateRegion(RegionData regionData, Map<String, CommonAreaMarker> newWorldNameAreaMarkerMap) {
-
+        set.deleteAllMarkers();
         int polyIndex = 0; /* Index of polygon for when a town has multiple shapes. */
 
         Collection<RegionClaimedChunk> townClaimedChunks = regionData.getClaims();
@@ -189,8 +190,6 @@ public class ChunkManager {
 
 
     }
-
-
 
 
     private void floodFillTarget(TileFlags src, TileFlags dest, int x, int y) {

@@ -32,11 +32,12 @@ public class UpdateChunks implements Runnable {
 
     @Override
     public void run() {
-        update();
+        mainUpdate();
     }
 
 
-    public void update() {
+    public void mainUpdate() {
+
 
         //Update town and regions descriptions
         for(TownData townData : TownDataStorage.getTownMap().values()){

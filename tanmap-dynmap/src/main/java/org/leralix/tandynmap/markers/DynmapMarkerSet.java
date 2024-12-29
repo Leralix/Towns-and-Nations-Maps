@@ -27,6 +27,9 @@ public class DynmapMarkerSet extends CommonMarkerSet {
         for (AreaMarker areaMarker : markerSet.getAreaMarkers()){
             areaMarker.deleteMarker();
         }
+        for(Marker marker : markerSet.getMarkers()){
+            marker.deleteMarker();
+        }
     }
 
     @Override

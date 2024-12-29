@@ -14,7 +14,6 @@ import org.leralix.tancommon.storage.ChunkManager;
 import org.leralix.tancommon.update.UpdateChunks;
 import org.leralix.tancommon.update.UpdateLandMarks;
 
-import java.io.File;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -153,7 +152,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
     }
 
     public void updateDynmap() {
-        updateChunks.update();
+        updateChunks.mainUpdate();
         updateLandMarks.update();
     }
 
