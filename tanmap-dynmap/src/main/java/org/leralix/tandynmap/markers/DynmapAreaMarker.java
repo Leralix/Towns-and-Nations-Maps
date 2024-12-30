@@ -14,7 +14,6 @@ public class DynmapAreaMarker implements CommonAreaMarker {
 
     @Override
     public void setCornerLocations(double[] x, double[] z) {
-        System.out.println("DynmapAreaMarker setCornerLocations : " + Arrays.toString(x) + " " + Arrays.toString(z));
         areaMarker.setCornerLocations(x, z);
     }
 
