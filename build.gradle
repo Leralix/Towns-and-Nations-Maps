@@ -35,7 +35,7 @@ allprojects {
 
     dependencies {
         compileOnly "org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT"
-        compileOnly name: 'Towns_and_Nations-0.12.1'
+        compileOnly name: 'Towns_and_Nations-0.12.2'
     }
 
     def targetJavaVersion = 21

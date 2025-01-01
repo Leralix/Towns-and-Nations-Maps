@@ -4,6 +4,7 @@ import org.bukkit.plugin.Plugin;
 import org.dynmap.DynmapAPI;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonLayerAPI;
+import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tandynmap.markers.DynmapLayerAPI;
 
 public class TownsAndNationsDynmap extends TownsAndNationsMapCommon {
@@ -19,8 +20,7 @@ public class TownsAndNationsDynmap extends TownsAndNationsMapCommon {
     }
 
     @Override
-    protected CommonLayerAPI createMarkerAPI(Plugin markerAPI) {
-        DynmapAPI dynmapAPI = (DynmapAPI) markerAPI;
-        return new DynmapLayerAPI(dynmapAPI.getMarkerAPI());
+    protected CommonMarkerRegister createMarkerRegister() {
+        return new DynmapMarkerRegister();
     }
 }

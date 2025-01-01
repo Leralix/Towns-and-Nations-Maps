@@ -35,7 +35,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         // Plugin startup logic
         plugin = this;
 
-        logger.info("[Tanmap : " + getSubMapName() + "] -Loading Plugin");
+        logger.info("[TaN - " + getSubMapName() + "] -Loading Plugin");
         new Metrics(this, getBStatID());
 
 
@@ -118,6 +118,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
     }
 
     public void updateDynmap() {
+        markerRegister.deleteAllMarkers();
         updateChunks.update();
         updateLandMarks.update();
     }

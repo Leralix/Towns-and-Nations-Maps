@@ -31,7 +31,7 @@ public class UpdateLandMarks implements Runnable {
     }
 
     public void update(){
-        set.deleteAllMarkers();
+
 
         for(Landmark landmark : LandmarkStorage.getList()) {
             set.registerNewLandmark(landmark);

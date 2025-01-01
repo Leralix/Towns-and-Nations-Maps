@@ -33,6 +33,13 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
 
     @Override
     protected void setupLandmarkLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
+        setupLayer(id, name, chunkLayerPriority, hideByDefault, worldsName, landmarkLayerMap);
+    }
+    @Override
+    protected void setupChunkLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
+        setupLayer(id, name, chunkLayerPriority, hideByDefault, worldsName, chunkLayerMap);
+    }
+    private void setupLayer(String id, String name, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName, Map<TanKey, SimpleLayerProvider> landmarkLayerMap) {
         List<World> worlds = new ArrayList<>();
         if(worldsName.contains("all") || worldsName.isEmpty()) {
             worlds.addAll(Bukkit.getWorlds());
@@ -51,38 +58,15 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
 
 
             Optional<MapWorld> optionalWorld = api.getWorldIfEnabled(BukkitAdapter.worldIdentifier(world));
+
             if(optionalWorld.isPresent()){
                 MapWorld mapWorld = optionalWorld.get();
                 mapWorld.layerRegistry().register(Key.of(id), layerProvider);
             }
+
         }
     }
 
-    @Override
-    protected void setupChunkLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
-        List<World> worlds = new ArrayList<>();
-        if(worldsName.contains("all") || worldsName.isEmpty()) {
-            worlds.addAll(Bukkit.getWorlds());
-        }
-        else {
-            for (String worldName : worldsName) {
-                World world = Bukkit.getWorld(worldName);
-                if (world != null)
-                    worlds.add(world);
-            }
-        }
-        for(World world : worlds) {
-            TanKey key = new TanKey(world, id);
-            SimpleLayerProvider layerProvider = SimpleLayerProvider.builder(name).layerPriority(chunkLayerPriority).defaultHidden(hideByDefault).build();
-            chunkLayerMap.put(key,layerProvider);
-
-            Optional<MapWorld> optionalWorld = api.getWorldIfEnabled(BukkitAdapter.worldIdentifier(world));
-            if(optionalWorld.isPresent()){
-                MapWorld mapWorld = optionalWorld.get();
-                mapWorld.layerRegistry().register(Key.of(id), layerProvider);
-            }
-        }
-    }
 
     @Override
     public boolean isWorking() {
@@ -128,8 +112,6 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
         Marker marker = Marker.polygon(pointList).markerOptions(options);
 
 
-        System.out.println("Registering area " + polyId + " from " + territoryData.getName() + " in " + worldName);
-        System.out.println("polygon have " + x.length + " points");
 
         TanKey key = new TanKey(Bukkit.getWorld(worldName), "townsandnations.chunks");
         chunkLayerMap.get(key).addMarker(Key.of(polyId), marker);

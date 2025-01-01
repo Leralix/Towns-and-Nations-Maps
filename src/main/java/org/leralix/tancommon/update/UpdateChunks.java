@@ -14,20 +14,17 @@ import java.util.Map;
 
 public class UpdateChunks implements Runnable {
 
-    private final Map<String, CommonAreaMarker> chunkMap;
     private final ChunkManager chunkManager;
     private final Long updatePeriod;
 
     public UpdateChunks(ChunkManager chunkManager, long updatePeriod) {
         this.chunkManager = chunkManager;
         this.updatePeriod = updatePeriod;
-        this.chunkMap = new HashMap<>();
     }
 
     public UpdateChunks(UpdateChunks copy) {
         this.chunkManager = copy.chunkManager;
         this.updatePeriod = copy.updatePeriod;
-        this.chunkMap = new HashMap<>();
     }
 
     @Override
@@ -40,7 +37,7 @@ public class UpdateChunks implements Runnable {
 
 
         //Update town and regions descriptions
-        for(TownData townData : TownDataStorage.getTownMap().values()){
+        for(TownData townData : TownDataStorage.getAll()){
             TownDescription townDescription = new TownDescription(townData);
             TownDescriptionStorage.add(townDescription);
         }

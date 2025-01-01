@@ -34,9 +34,7 @@ public class BluemapLayer extends CommonMarkerSet {
     @Override
     public void createLandmark(Landmark landmark, String name, String worldName, int x, int y, int z, boolean b) {
 
-        System.out.println("Markerset Keys: " + markerSets.keySet());
         MarkerSet worldMarkerSet = markerSets.get(worldName + "_townsandnations.landmarks");
-        System.out.println("Creating landmark marker");
         POIMarker marker = POIMarker.builder()
                 .label("My Marker")
                 .position(20.0, 65.0, -23.0)
@@ -50,7 +48,6 @@ public class BluemapLayer extends CommonMarkerSet {
     @Override
     public CommonAreaMarker createAreaMarker(String polyID, String name, boolean b, String worldName, double[] x, double[] z, Color color, String description) {
 
-        System.out.println("Markerset Keys: " + markerSets.keySet());
         MarkerSet worldMarkerSet = markerSets.get(worldName + "_townsandnations.chunks");
 
 
@@ -60,7 +57,6 @@ public class BluemapLayer extends CommonMarkerSet {
             z[i] = z[i] * 16;
             pointList.add(new Vector2d(x[i],z[i]));
         }
-        System.out.println("Creating area marker with " + pointList.size() + " points");
         de.bluecolored.bluemap.api.math.Shape shape = de.bluecolored.bluemap.api.math.Shape.builder().addPoints(pointList).build();
 
         ShapeMarker shapeMarker = ShapeMarker.builder().shape(shape,70).label(name).build();

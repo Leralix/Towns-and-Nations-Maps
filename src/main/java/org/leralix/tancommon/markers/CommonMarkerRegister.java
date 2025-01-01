@@ -17,26 +17,24 @@ public abstract class CommonMarkerRegister {
     public void setup(){
         FileConfiguration cfg = TownsAndNationsMapCommon.getPlugin().getConfig();
         cfg.options().copyDefaults(true); //TODO : check if that is really useful
+        TownsAndNationsMapCommon.getPlugin().saveConfig();
 
-        String id = "townsandnations.chunks";
-        String name = cfg.getString("chunk_layer.name", "Towns and Nations");
-        int minZoom = Math.max(cfg.getInt("chunk_layer.minimum_zoom", 0),0);
-        int chunkLayerPriority =  Math.max(cfg.getInt("chunk_layer.priority", 10),0);
-        boolean hideByDefault = cfg.getBoolean("chunk_layer.hide_by_default", false);
-        List<String> worldsName = cfg.getStringList("chunk_layer.worlds");
-
-        setupChunkLayer(id, name, minZoom, chunkLayerPriority, hideByDefault, worldsName);
-
-
-        id = "townsandnations.landmarks";
-        name = cfg.getString("landmark_layer.name", "Towns and Nations");
-        minZoom = Math.max(cfg.getInt("landmark_layer.minimum_zoom", 0),0);
-        chunkLayerPriority =  Math.max(cfg.getInt("landmark_layer.priority", 10),0);
-        hideByDefault = cfg.getBoolean("landmark_layer.hide_by_default", false);
-        worldsName = cfg.getStringList("landmark_layer.worlds");
-
+        String id = "townsandnations.landmarks";
+        String name = cfg.getString("landmark_layer.name", "Towns and Nations - Landmarks");
+        int minZoom = Math.max(cfg.getInt("landmark_layer.minimum_zoom", 0),0);
+        int chunkLayerPriority =  Math.max(cfg.getInt("landmark_layer.priority", 10),0);
+        boolean hideByDefault = cfg.getBoolean("landmark_layer.hide_by_default", false);
+        List<String> worldsName = cfg.getStringList("landmark_layer.worlds");
         setupLandmarkLayer(id, name, minZoom, chunkLayerPriority, hideByDefault, worldsName);
 
+
+        String id2 = "townsandnations.chunks";
+        String name2 = cfg.getString("chunk_layer.name", "Towns and Nations");
+        int minZoom2 = Math.max(cfg.getInt("chunk_layer.minimum_zoom", 0),0);
+        int chunkLayerPriority2 =  Math.max(cfg.getInt("chunk_layer.priority", 10),0);
+        boolean hideByDefault2 = cfg.getBoolean("chunk_layer.hide_by_default", false);
+        List<String> worldsName2 = cfg.getStringList("chunk_layer.worlds");
+        setupChunkLayer(id2, name2, minZoom2, chunkLayerPriority2, hideByDefault2, worldsName2);
     }
 
     protected abstract void setupLandmarkLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName);

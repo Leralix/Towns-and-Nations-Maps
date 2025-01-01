@@ -3,8 +3,6 @@ package org.leralix.tandynmap.markers;
 import org.dynmap.markers.AreaMarker;
 import org.leralix.tancommon.markers.CommonAreaMarker;
 
-import java.util.Arrays;
-
 public class DynmapAreaMarker implements CommonAreaMarker {
 
     AreaMarker areaMarker;
