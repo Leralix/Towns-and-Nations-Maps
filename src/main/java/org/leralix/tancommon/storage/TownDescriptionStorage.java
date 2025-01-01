@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class TownDescriptionStorage {
 
-    private static Map<String, TownDescription> townDescriptionData = new HashMap<>();
+    private static final Map<String, TownDescription> townDescriptionData = new HashMap<>();
 
 
     public static void add(TownDescription data){

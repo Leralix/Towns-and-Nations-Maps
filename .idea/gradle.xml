@@ -8,6 +8,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/tanmap-bluemap" />
             <option value="$PROJECT_DIR$/tanmap-dynmap" />
             <option value="$PROJECT_DIR$/tanmap-squaremap" />
           </set>

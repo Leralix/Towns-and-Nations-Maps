@@ -1,0 +1,16 @@
+plugins {
+    id "java"
+}
+
+repositories {
+    maven { url 'https://repo.bluecolored.de/releases' }
+}
+
+dependencies {
+    implementation project(path: ':')
+    compileOnly 'de.bluecolored:bluemap-api:2.7.3'
+}
+
+tasks.test {
+    useJUnitPlatform()
+}

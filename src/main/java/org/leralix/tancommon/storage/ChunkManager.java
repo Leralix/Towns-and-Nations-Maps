@@ -1,6 +1,5 @@
 package org.leralix.tancommon.storage;
 
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.leralix.tan.TownsAndNations;
@@ -10,30 +9,28 @@ import org.leralix.tan.dataclass.territory.RegionData;
 import org.leralix.tan.dataclass.territory.TerritoryData;
 import org.leralix.tan.dataclass.territory.TownData;
 import org.leralix.tancommon.markers.CommonAreaMarker;
-import org.leralix.tancommon.markers.CommonMarkerSet;
-import org.leralix.tancommon.event.TownRenderEvent;
+import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.style.AreaStyle;
 
 import java.util.*;
 
 public class ChunkManager {
 
-    private final CommonMarkerSet set;
+    private final CommonMarkerRegister commonMarkerRegister;
     private final AreaStyle townAreaStyle;
     private final AreaStyle regionAreaStyle;
     private final Map<String, CommonAreaMarker> existingAreaMarkers = new HashMap<>();
 
     enum direction {XPLUS, ZPLUS, XMINUS, ZMINUS}
 
-    public ChunkManager(CommonMarkerSet set) {
-        this.set = set;
+    public ChunkManager(CommonMarkerRegister markerRegister) {
+        this.commonMarkerRegister = markerRegister;
         FileConfiguration fc = TownsAndNations.getPlugin().getConfig();
         this.townAreaStyle = new AreaStyle(fc, "town_fieldStyle");
         this.regionAreaStyle = new AreaStyle(fc, "region_fieldStyle");
     }
 
-    public void updateTown(TownData townData, Map<String, CommonAreaMarker> newWorldNameAreaMarkerMap) {
-        set.deleteAllMarkers();
+    public void updateTown(TownData townData) {
 
         int polyIndex = 0; /* Index of polygon for when a town has multiple shapes. */
 
@@ -44,7 +41,7 @@ public class ChunkManager {
         String infoWindowPopup = TownDescriptionStorage.get(townData.getID()).getChunkDescription();
 
         HashMap<String, TileFlags> worldNameShapeMap = new HashMap<>();
-        LinkedList<TownClaimedChunk> claimedChunksToDraw = new LinkedList<>();
+        List<TownClaimedChunk> claimedChunksToDraw = new LinkedList<>();
 
         World currentWorld = null;
         TileFlags currentShape = null;
@@ -105,14 +102,13 @@ public class ChunkManager {
             }
             claimedChunksToDraw = townBlockLeftToDraw; /* Replace list (null if no more to process) */
             if(ourShape != null) {
-                polyIndex = traceTerritoryOutline(townData, newWorldNameAreaMarkerMap, polyIndex, infoWindowPopup, currentWorld.getName(), ourShape, minx, minz);
+                polyIndex = traceTerritoryOutline(townData, polyIndex, infoWindowPopup, currentWorld.getName(), ourShape, minx, minz);
             }
         }
 
     }
 
-    public void updateRegion(RegionData regionData, Map<String, CommonAreaMarker> newWorldNameAreaMarkerMap) {
-        set.deleteAllMarkers();
+    public void updateRegion(RegionData regionData) {
         int polyIndex = 0; /* Index of polygon for when a town has multiple shapes. */
 
         Collection<RegionClaimedChunk> townClaimedChunks = regionData.getClaims();
@@ -184,7 +180,7 @@ public class ChunkManager {
             }
             claimedChunksToDraw = townBlockLeftToDraw; /* Replace list (null if no more to process) */
             if(ourShape != null) {
-                polyIndex = traceTerritoryOutline(regionData, newWorldNameAreaMarkerMap, polyIndex, infoWindowPopup, currentWorld.getName(), ourShape, minx, minz);
+                polyIndex = traceTerritoryOutline(regionData, polyIndex, infoWindowPopup, currentWorld.getName(), ourShape, minx, minz);
             }
         }
 
@@ -215,8 +211,7 @@ public class ChunkManager {
         }
     }
 
-    private int traceTerritoryOutline(TerritoryData territoryData, Map<String, CommonAreaMarker> newWorldNameMarkerMap, int polyIndex,
-                                      String infoWindowPopup, String worldName, TileFlags ourShape, int minx, int minz) {
+    private int traceTerritoryOutline(TerritoryData territoryData, int polyIndex, String infoWindowPopup, String worldName, TileFlags ourShape, int minx, int minz) {
 
         double[] x;
         double[] z;
@@ -298,25 +293,9 @@ public class ChunkManager {
             x[i] = (double)line[0] * (double)16;
             z[i] = (double)line[1] * (double)16;
         }
-        CommonAreaMarker areaMarker = existingAreaMarkers.get(polyid);
-        if(areaMarker == null) {
-            //areaMarker = set.findAreaMarker(polyid);
-            if(areaMarker == null) {
-                areaMarker = set.createAreaMarker(polyid, territoryData.getName(), false, worldName, x, z, territoryData.getChunkColor().getColor(), infoWindowPopup);
-            }
-        }
 
-        areaMarker.setCornerLocations(x, z);
-        areaMarker.setLabel(territoryData.getName());
-        addStyle(territoryData, areaMarker);
+        commonMarkerRegister.registerNewArea(polyid, territoryData, false, worldName, x, z, infoWindowPopup);
 
-        /* Fire an event allowing other plugins to alter the AreaMarker */
-        TownRenderEvent renderEvent = new TownRenderEvent(areaMarker);
-        Bukkit.getPluginManager().callEvent(renderEvent);
-        areaMarker = renderEvent.getAreaMarker();
-
-        /* Add to map */
-        newWorldNameMarkerMap.put(polyid, areaMarker);
         polyIndex++;
         return polyIndex;
     }

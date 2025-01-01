@@ -1,4 +1,5 @@
 rootProject.name = 'tanmap-common'
 include 'tanmap-squaremap'
 include 'tanmap-dynmap'
+include 'tanmap-bluemap'
 

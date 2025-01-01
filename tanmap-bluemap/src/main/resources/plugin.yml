@@ -1,0 +1,14 @@
+name: tanmap-bluemap
+version: '${version}'
+main: org.leralix.tansquaremap.TownsAndNationsBluemap
+api-version: '1.19'
+depend:  [TownsAndNations, BlueMap]
+commands:
+  tanmap:
+    description: Town and Nation dynmap command
+    permission: townandnation_dynmap.base
+    usage: /<command>
+  tanmapAdmin:
+    description: Town and Nation dynmap admin command
+    permission: townandnation_dynmap.admin
+    usage: /<command>

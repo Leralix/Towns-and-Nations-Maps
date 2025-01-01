@@ -4,17 +4,18 @@ import org.bukkit.plugin.Plugin;
 import org.leralix.tan.dataclass.Landmark;
 import org.leralix.tan.dataclass.Vector3D;
 import org.leralix.tan.storage.stored.LandmarkStorage;
+import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.CommonMarkerSet;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 
 
 public class UpdateLandMarks implements Runnable {
 
-    private final CommonMarkerSet set;
+    private final CommonMarkerRegister set;
     private final long updatePeriod;
 
 
-    public UpdateLandMarks(CommonMarkerSet set, long updatePeriod){
+    public UpdateLandMarks(CommonMarkerRegister set, long updatePeriod){
         this.set = set;
         this.updatePeriod = updatePeriod;
     }
@@ -33,9 +34,7 @@ public class UpdateLandMarks implements Runnable {
         set.deleteAllMarkers();
 
         for(Landmark landmark : LandmarkStorage.getList()) {
-            Vector3D vector3D = landmark.getPosition();
-            String worldName = vector3D.getWorld().getName();
-            set.createLandmark(landmark, "landmark", worldName, vector3D.getX(), vector3D.getY(), vector3D.getZ(), false);
+            set.registerNewLandmark(landmark);
         }
 
         Plugin plugin = TownsAndNationsMapCommon.getPlugin();

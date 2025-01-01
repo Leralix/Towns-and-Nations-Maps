@@ -8,12 +8,6 @@ import org.leralix.tandynmap.markers.DynmapLayerAPI;
 
 public class TownsAndNationsDynmap extends TownsAndNationsMapCommon {
 
-
-    @Override
-    protected void registerIcons() {
-
-    }
-
     @Override
     protected String getSubMapName() {
         return "dynmap";

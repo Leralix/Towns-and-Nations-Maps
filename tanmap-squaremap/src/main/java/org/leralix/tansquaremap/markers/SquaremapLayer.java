@@ -2,13 +2,11 @@ package org.leralix.tansquaremap.markers;
 
 import org.leralix.tan.dataclass.Landmark;
 import org.leralix.tancommon.markers.CommonAreaMarker;
-import org.leralix.tancommon.markers.CommonMarker;
 import org.leralix.tancommon.markers.CommonMarkerSet;
 import org.leralix.tancommon.markers.IconType;
 import xyz.jpenilla.squaremap.api.Key;
 import xyz.jpenilla.squaremap.api.Point;
 import xyz.jpenilla.squaremap.api.SimpleLayerProvider;
-import xyz.jpenilla.squaremap.api.SquaremapProvider;
 import xyz.jpenilla.squaremap.api.marker.Marker;
 import xyz.jpenilla.squaremap.api.marker.MarkerOptions;
 
@@ -34,7 +32,7 @@ public class SquaremapLayer extends CommonMarkerSet {
     }
 
     @Override
-    public CommonMarker createLandmark(Landmark landmark, String name, String worldName, int x, int y, int z, boolean b) {
+    public void createLandmark(Landmark landmark, String name, String worldName, int x, int y, int z, boolean b) {
         Point point = Point.of(x, z);
 
         MarkerOptions markerOptions = MarkerOptions.builder().
@@ -49,17 +47,6 @@ public class SquaremapLayer extends CommonMarkerSet {
 
         layerMap.get(Key.of(worldName)).addMarker(Key.of(landmark.getID()), marker);
 
-        return new SquaremapMarker(marker);
-    }
-
-    @Override
-    public CommonAreaMarker findAreaMarker(String polyID) {
-        SimpleLayerProvider layer = layerMap.get(Key.of(polyID));
-        if(layer == null){
-            return null;
-        }
-        Marker areaMarker = layerMap.get(Key.of(polyID)).registeredMarkers().get(Key.of(polyID));
-        return new SquaremapAreaMarker(areaMarker);
     }
 
     @Override

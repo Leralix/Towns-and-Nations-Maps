@@ -32,11 +32,11 @@ public class UpdateChunks implements Runnable {
 
     @Override
     public void run() {
-        mainUpdate();
+        update();
     }
 
 
-    public void mainUpdate() {
+    public void update() {
 
 
         //Update town and regions descriptions
@@ -52,11 +52,11 @@ public class UpdateChunks implements Runnable {
 
 
         for(TownData townData : TownDataStorage.getTownMap().values()){
-            chunkManager.updateTown(townData, chunkMap);
+            chunkManager.updateTown(townData);
         }
 
         for(RegionData regionData : RegionDataStorage.getAll()){
-            chunkManager.updateRegion(regionData, chunkMap);
+            chunkManager.updateRegion(regionData);
         }
 
         Plugin plugin = TownsAndNationsMapCommon.getPlugin();

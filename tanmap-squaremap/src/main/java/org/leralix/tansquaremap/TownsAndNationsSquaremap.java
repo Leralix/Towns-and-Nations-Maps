@@ -1,11 +1,8 @@
 package org.leralix.tansquaremap;
 
-import org.bukkit.plugin.Plugin;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
-import org.leralix.tancommon.markers.CommonLayerAPI;
+import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
-import org.leralix.tansquaremap.markers.SquaremapLayerAPI;
-import org.leralix.tansquaremap.markers.SquaremapMarker;
 import xyz.jpenilla.squaremap.api.Key;
 import xyz.jpenilla.squaremap.api.SquaremapProvider;
 
@@ -17,7 +14,6 @@ import java.io.IOException;
 public class TownsAndNationsSquaremap extends TownsAndNationsMapCommon {
 
 
-    @Override
     protected void registerIcons() {
         File iconsDir = new File(getDataFolder(), "icons");
         if (!iconsDir.exists()) {
@@ -36,6 +32,8 @@ public class TownsAndNationsSquaremap extends TownsAndNationsMapCommon {
         try {
             File file = new File(TownsAndNationsMapCommon.getPlugin().getDataFolder(), "icons/" + iconType.getFileName());
             BufferedImage image = ImageIO.read(file);
+            if(SquaremapProvider.get().iconRegistry().hasEntry(Key.of(iconType.getFileName())))
+                SquaremapProvider.get().iconRegistry().unregister(Key.of(iconType.getFileName()));
             SquaremapProvider.get().iconRegistry().register(Key.of(iconType.getFileName()),image);
         } catch (IOException e) {
             throw new RuntimeException("Erreur lors du chargement de landmark.png", e);
@@ -53,7 +51,8 @@ public class TownsAndNationsSquaremap extends TownsAndNationsMapCommon {
     }
 
     @Override
-    protected CommonLayerAPI createMarkerAPI(Plugin markerAPI) {
-        return new SquaremapLayerAPI();
+    protected CommonMarkerRegister createMarkerRegister() {
+        registerIcons();
+        return new SquaremapMarkerRegister();
     }
 }

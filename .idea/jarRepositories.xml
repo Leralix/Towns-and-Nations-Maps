@@ -31,5 +31,15 @@
       <option name="name" value="dynmap" />
       <option name="url" value="https://repo.mikeprimm.com/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="https://repo.bluecolored.de/releases" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="https://repo.bluecolored.de/#/releases" />
+    </remote-repository>
   </component>
 </project>

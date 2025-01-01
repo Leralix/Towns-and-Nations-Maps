@@ -1,12 +1,23 @@
-# Dynmap-TAN configuration
+# Common configuration options
 #
 update:
-  # Seconds between checks for TownsAndNations_dynmap updates
+  # Seconds between checks for map update
   period: 300
 
+
+
+
+# Territory Layer (Towns, Regions and Nations)
 chunk_layer:
   # Name of the layer
   name: "Towns and Nations"
+  # List of worlds to show on the map
+  # use ALL to show all worlds
+  worlds:
+    #  - "world"
+    #  - "world_nether"
+    #  - "world_the_end"
+    - "ALL"
   # Make the layer hidden by default
   hide_by_default: false
   # ordering priority in layer menu (low goes before high - default is 0)
@@ -18,6 +29,13 @@ chunk_layer:
 landmark_layer:
   # Name of the layer
   name: "Towns and Nations - landmarks"
+  # List of worlds to show on the map
+  # use ALL to show all worlds
+  worlds:
+    #  - "world"
+    #  - "world_nether"
+    #  - "world_the_end"
+    - "ALL"
   # Make the layer hidden by default
   hide_by_default: false
   # ordering priority in layer menu (low goes before high - default is 0)
@@ -43,18 +61,15 @@ region_infowindow: '<div class="infowindow"> <span style="font-size:140%;font-we
 
 landmark_infowindow: '<div class="infowindow"><span style="font-size:140%;font-weight:bold;">Landmark</span><span style="font-size:100%;font-style:italic;"><br><hr><span style="font-size:100%;"><b>Owner</b></span><br>%OWNER%</div><b>Producing<br></b> %QUANTITY%x %ITEM%</span>'
 
+# Field style for territories
 
 town_fieldStyle:
-  baseStrokeColor: "#FF0000" #Not implemented yet, chunk color from the town will override
   strokeOpacity: 0.8
   strokeWeight: 3
-  baseFillColor: "#FF0000" #Not implemented yet, chunk color from the town will override
   fillOpacity: 0.35
 
 region_fieldStyle:
-  baseStrokeColor: "#FF0000" #Not implemented yet, chunk color from the town will override
   strokeOpacity: 0.6
   strokeWeight: 3
-  baseFillColor: "#FF0000" #Not implemented yet, chunk color from the town will override
   fillOpacity: 0.2
 

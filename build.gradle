@@ -4,7 +4,7 @@ plugins {
 
 subprojects {
     apply plugin: 'java'
-    task copyPluginYml(type: Copy) {
+    tasks.register('copyPluginYml', Copy) {
         from "$projectDir/src/main/resources/plugin.yml"
         into "$buildDir/resources/main"
     }
@@ -16,7 +16,7 @@ subprojects {
 
 allprojects {
     group = 'org.leralix'
-    version = '0.10.1'
+    version = '0.10.3'
 
     repositories {
         mavenCentral()
@@ -38,7 +38,7 @@ allprojects {
         compileOnly name: 'Towns_and_Nations-0.12.1'
     }
 
-    def targetJavaVersion = 17
+    def targetJavaVersion = 21
     java {
         def javaVersion = JavaVersion.toVersion(targetJavaVersion)
         sourceCompatibility = javaVersion

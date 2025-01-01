@@ -12,9 +12,8 @@ public abstract class CommonMarkerSet {
 
     public abstract void deleteAllMarkers();
 
-    public abstract CommonMarker createLandmark(Landmark landmark, String name, String worldName, int x, int y, int z, boolean b);
+    public abstract void createLandmark(Landmark landmark, String name, String worldName, int x, int y, int z, boolean b);
 
-    public abstract CommonAreaMarker findAreaMarker(String polyID);
     public abstract CommonAreaMarker createAreaMarker(String polyID, String name, boolean b, String worldName, double[] x, double[] z, Color color, String description);
 
     protected String generateDescription(Landmark landmark) {
