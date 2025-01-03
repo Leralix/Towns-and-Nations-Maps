@@ -56,20 +56,12 @@ landmark_layer:
 #%NUMBER_OF_TOWNS% - Number of towns in the region
 #%TOWN_LIST% - List of towns in the region
 #%REGION_CAPITAL% - Capital of the region
+
 town_infowindow: '<div class="infowindow"><span style="font-size:140%;font-weight:bold;">%TOWN_NAME%</span>  <span style="font-size:80%">Created %DAYS_SINCE_CREATION% day(s) ago</span><br><br><span style="font-size:100%;font-style:italic;">%DESCRIPTION%</span><br><hr><span style="font-size:100%;"><b>Claims</b> %NUMBER_CLAIMS% <b>|</b> <b>Level</b> %TOWN_LEVEL% </span><hr><br><span style="font-weight:bold;">Region:</span><br>%REGION_NAME%<br><br><span style="font-weight:bold;">Leader</span><br>%TOWN_LEADER%<br><br><span style="font-weight:bold;">Members</span><br>%MEMBERS_LIST%<br></div>'
 region_infowindow: '<div class="infowindow"> <span style="font-size:140%;font-weight:bold;">%REGION_NAME%</span>  <span style="font-size:80%">Created %DAYS_SINCE_CREATION% day(s) ago</span><br><br><span style="font-size:100%;font-style:italic;">%DESCRIPTION%</span><br><hr><span style="font-size:100%;"><b>Claims</b> %NUMBER_CLAIMS% <b>|</b> <b>Number of towns</b> %NUMBER_OF_TOWNS% </span><hr><br><span style="font-weight:bold;">Capital</span><br>%REGION_CAPITAL%<br><br><span style="font-weight:bold;">Towns</span><br>%TOWN_LIST%<br></div>'
 
 landmark_infowindow: '<div class="infowindow"><span style="font-size:140%;font-weight:bold;">Landmark</span><span style="font-size:100%;font-style:italic;"><br><hr><span style="font-size:100%;"><b>Owner</b></span><br>%OWNER%</div><b>Producing<br></b> %QUANTITY%x %ITEM%</span>'
 
-# Field style for territories
 
-town_fieldStyle:
-  strokeOpacity: 0.8
-  strokeWeight: 3
-  fillOpacity: 0.35
-
-region_fieldStyle:
-  strokeOpacity: 0.6
-  strokeWeight: 3
-  fillOpacity: 0.2
-
+#Config version
+config-version: 3

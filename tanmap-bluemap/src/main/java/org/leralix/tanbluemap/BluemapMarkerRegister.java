@@ -7,6 +7,7 @@ import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
 import de.bluecolored.bluemap.api.markers.ShapeMarker;
 import de.bluecolored.bluemap.api.math.Color;
+import de.bluecolored.bluemap.api.math.Shape;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -81,7 +82,8 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
         Location location = landmark.getLocation();
         World world = location.getWorld();
         POIMarker marker = POIMarker.builder()
-                .label("My Marker")
+                .label(landmark.getName())
+                .detail(generateDescription(landmark))
                 .position(location.getX(), location.getY(), location.getZ())
                 .maxDistance(2000)
                 .build();
@@ -98,21 +100,24 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
         }
 
         Color color = new Color(territoryData.getChunkColor().getColor().getRGB());
+        Color lineColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), 0.8f);
+        Color fillColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f);
 
         Collection<com.flowpowered.math.vector.Vector2d> pointList = new ArrayList<>();
         for(int i = 0; i < x.length; i++){
-            x[i] = x[i] * 16;
-            z[i] = z[i] * 16;
             pointList.add(new Vector2d(x[i],z[i]));
         }
-        de.bluecolored.bluemap.api.math.Shape shape = de.bluecolored.bluemap.api.math.Shape.builder().addPoints(pointList).build();
+        Shape shape = Shape.builder().addPoints(pointList).build();
 
         ShapeMarker shapeMarker = ShapeMarker.builder()
                 .shape(shape,70)
                 .label(territoryData.getName())
-                .fillColor(color)
-                .lineColor(color)
+                .detail(infoWindowPopup)
+                .lineColor(lineColor)
+                .fillColor(fillColor)
                 .lineWidth(2)
+                .minDistance(10)
+                .depthTestEnabled(false)
                 .build();
 
         this.chunkLayerMap.get(new TanKey(world)).getMarkers().put(polyid, shapeMarker);
