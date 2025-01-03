@@ -12,12 +12,12 @@ chunk_layer:
   # Name of the layer
   name: "Towns and Nations"
   # List of worlds to show on the map
-  # use ALL to show all worlds
+  # use "all" to show all worlds
   worlds:
     #  - "world"
     #  - "world_nether"
     #  - "world_the_end"
-    - "ALL"
+    - "all"
   # Make the layer hidden by default
   hide_by_default: false
   # ordering priority in layer menu (low goes before high - default is 0)
@@ -30,12 +30,12 @@ landmark_layer:
   # Name of the layer
   name: "Towns and Nations - landmarks"
   # List of worlds to show on the map
-  # use ALL to show all worlds
+  # use "all" to show all worlds
   worlds:
     #  - "world"
     #  - "world_nether"
     #  - "world_the_end"
-    - "ALL"
+    - "all"
   # Make the layer hidden by default
   hide_by_default: false
   # ordering priority in layer menu (low goes before high - default is 0)

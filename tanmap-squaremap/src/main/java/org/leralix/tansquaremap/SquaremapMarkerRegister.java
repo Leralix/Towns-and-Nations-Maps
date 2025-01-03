@@ -3,14 +3,10 @@ package org.leralix.tansquaremap;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.leralix.tan.dataclass.Landmark;
-import org.leralix.tan.dataclass.territory.RegionData;
 import org.leralix.tan.dataclass.territory.TerritoryData;
-import org.leralix.tan.dataclass.territory.TownData;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
-import org.leralix.tancommon.storage.RegionDescription;
 import org.leralix.tancommon.storage.TanKey;
-import org.leralix.tancommon.storage.TownDescription;
 import xyz.jpenilla.squaremap.api.*;
 import xyz.jpenilla.squaremap.api.Point;
 import xyz.jpenilla.squaremap.api.marker.Marker;
@@ -52,7 +48,7 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
             }
         }
         for(World world : worlds) {
-            TanKey key = new TanKey(world, id);
+            TanKey key = new TanKey(world);
             SimpleLayerProvider layerProvider = SimpleLayerProvider.builder(name).layerPriority(chunkLayerPriority).defaultHidden(hideByDefault).build();
             landmarkLayerMap.put(key,layerProvider);
 
@@ -87,7 +83,7 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
 
         Marker marker = Marker.icon(point, Key.of(imageKey),16).markerOptions(markerOptions);
 
-        TanKey key = new TanKey(landmark.getLocation().getWorld(), "townsandnations.landmarks");
+        TanKey key = new TanKey(landmark.getLocation().getWorld());
         landmarkLayerMap.get(key).addMarker(Key.of(landmark.getID()), marker);
     }
 
@@ -113,11 +109,8 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
 
 
 
-        TanKey key = new TanKey(Bukkit.getWorld(worldName), "townsandnations.chunks");
+        TanKey key = new TanKey(Bukkit.getWorld(worldName));
         chunkLayerMap.get(key).addMarker(Key.of(polyId), marker);
-
-        TanKey key2 = new TanKey(Bukkit.getWorld(worldName), "townsandnations.landmarks");
-        landmarkLayerMap.get(key2).addMarker(Key.of(polyId), marker);
     }
 
     @Override

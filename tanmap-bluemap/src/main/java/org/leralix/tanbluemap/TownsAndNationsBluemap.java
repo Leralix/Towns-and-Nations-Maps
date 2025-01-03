@@ -1,6 +1,5 @@
 package org.leralix.tanbluemap;
 
-import org.leralix.tanbluemap.markers.BluemapMarkerRegister;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 

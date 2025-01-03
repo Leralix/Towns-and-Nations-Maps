@@ -1,6 +1,6 @@
 name: tanmap-bluemap
 version: '${version}'
-main: org.leralix.tansquaremap.TownsAndNationsBluemap
+main: org.leralix.tanbluemap.TownsAndNationsBluemap
 api-version: '1.19'
 depend:  [TownsAndNations, BlueMap]
 commands:
