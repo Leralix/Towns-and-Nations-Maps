@@ -41,7 +41,7 @@ public class ChunkManager {
         String infoWindowPopup = TownDescriptionStorage.get(townData.getID()).getChunkDescription();
 
         HashMap<String, TileFlags> worldNameShapeMap = new HashMap<>();
-        List<TownClaimedChunk> claimedChunksToDraw = new LinkedList<>();
+        LinkedList<TownClaimedChunk> claimedChunksToDraw = new LinkedList<>();
 
         World currentWorld = null;
         TileFlags currentShape = null;
