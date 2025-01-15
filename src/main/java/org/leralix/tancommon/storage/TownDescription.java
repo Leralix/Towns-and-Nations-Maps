@@ -45,7 +45,7 @@ public class TownDescription {
         else
             ownerName = owner.getName();
 
-        String regionName = null;
+        String regionName = "No region";
         if(townData.haveOverlord())
             regionName = townData.getOverlord().getName();
         List<String> playersName = new ArrayList<>();

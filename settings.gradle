@@ -1,4 +1,4 @@
-rootProject.name = 'tanmap-common'
+rootProject.name = 'TownsAndNationsMaps'
 include 'tanmap-squaremap'
 include 'tanmap-dynmap'
 include 'tanmap-bluemap'

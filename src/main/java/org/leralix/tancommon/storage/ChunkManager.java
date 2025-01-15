@@ -57,7 +57,10 @@ public class ChunkManager {
                 }
                 currentWorld = townClaimedChunk.getWorld();
             }
-            currentShape.setFlag(townClaimedChunk.getX(), townClaimedChunk.getZ(), true); /* Set flag for block */
+            if (currentShape == null) {
+                currentShape = new TileFlags();
+            }
+            currentShape.setFlag(townClaimedChunk.getX(), townClaimedChunk.getZ(), true);
             claimedChunksToDraw.addLast(townClaimedChunk);
         }
 
