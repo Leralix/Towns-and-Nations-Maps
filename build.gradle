@@ -42,7 +42,7 @@ subprojects {
 
 allprojects {
     group = 'org.leralix'
-    version = '0.10.4'
+    version = '0.11.0'
 
     repositories {
         mavenCentral()
@@ -57,10 +57,15 @@ allprojects {
         flatDir {
             dirs "$rootDir/libs"
         }
+        maven {
+            name = "local"
+            url = uri("${rootDir}/../SphereLib/build/repo")
+        }
     }
 
     dependencies {
         compileOnly "org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT"
-        compileOnly name: 'Towns_and_Nations-0.12.2'
+        compileOnly name: 'TownsAndNations-0.13.0'
+        compileOnly "org.leralix:SphereLib:+"
     }
 }
