@@ -2,7 +2,7 @@ name: tanmap-squaremap
 version: '${version}'
 main: org.leralix.tansquaremap.TownsAndNationsSquaremap
 api-version: '1.19'
-depend:  [TownsAndNations, squaremap]
+depend:  [TownsAndNations, squaremap, SphereLib]
 commands:
   tanmap:
     description: Town and Nation dynmap command

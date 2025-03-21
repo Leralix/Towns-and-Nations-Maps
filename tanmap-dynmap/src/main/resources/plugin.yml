@@ -2,7 +2,7 @@ name: tanmap-dynmap
 version: '${version}'
 main: org.leralix.tandynmap.TownsAndNationsDynmap
 api-version: '1.19'
-depend:  [TownsAndNations, dynmap]
+depend:  [TownsAndNations, dynmap, SphereLib]
 commands:
   tanmap:
     description: Town and Nation dynmap command
