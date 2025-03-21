@@ -7,9 +7,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.leralix.lib.data.PluginVersion;
-import org.leralix.tan.TownsAndNations;
 import org.leralix.tancommon.bstat.Metrics;
-import org.leralix.tancommon.commands.CommandManager;
+import org.leralix.tancommon.commands.PlayerCommandManager;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.storage.ChunkManager;
 import org.leralix.tancommon.update.UpdateChunks;
@@ -59,7 +58,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
             setEnabled(false);
             return;
         }
-        Objects.requireNonNull(getCommand("tanmap")).setExecutor(new CommandManager());
+        Objects.requireNonNull(getCommand("tanmap")).setExecutor(new PlayerCommandManager());
 
         checkConfigVersion();
         initialise();
