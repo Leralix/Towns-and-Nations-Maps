@@ -1,10 +1,10 @@
 package org.leralix.tancommon.update;
 
 import org.bukkit.plugin.Plugin;
-import org.leralix.tan.dataclass.Landmark;
-import org.leralix.tan.storage.stored.LandmarkStorage;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
+import org.tan.api.TanAPI;
+import org.tan.api.interfaces.TanLandmark;
 
 
 public class UpdateLandMarks implements Runnable {
@@ -31,7 +31,7 @@ public class UpdateLandMarks implements Runnable {
     public void update(){
 
 
-        for(Landmark landmark : LandmarkStorage.getList()) {
+        for(TanLandmark landmark : TanAPI.getInstance().getLandmarkManager().getLandmarks()) {
             set.registerNewLandmark(landmark);
         }
 

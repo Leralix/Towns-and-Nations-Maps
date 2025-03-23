@@ -1,9 +1,9 @@
 package org.leralix.tandynmap.markers;
 
 import org.dynmap.markers.*;
-import org.leralix.tan.dataclass.Landmark;
 import org.leralix.tancommon.markers.CommonAreaMarker;
 import org.leralix.tancommon.markers.CommonMarkerSet;
+import org.tan.api.interfaces.TanLandmark;
 
 import java.awt.*;
 
@@ -32,13 +32,13 @@ public class DynmapMarkerSet extends CommonMarkerSet {
     }
 
     @Override
-    public void createLandmark(Landmark landmark, String name, String worldName, int x, int y, int z, boolean b) {
-        Marker marker = markerSet.findMarker(landmark.getID());
+    public void createLandmark(TanLandmark landmark, String name, String worldName, int x, int y, int z, boolean b) {
+        Marker marker = markerSet.findMarker(landmark.getUUID().toString());
         if (marker != null) {
             marker.deleteMarker();
         }
 
-        marker = markerSet.createMarker(landmark.getID(), name, worldName, x, y, z, markerAPI.getMarkerIcon("diamond"), b);
+        marker = markerSet.createMarker(landmark.getUUID().toString(), name, worldName, x, y, z, markerAPI.getMarkerIcon("diamond"), b);
         marker.setDescription(generateDescription(landmark));
 
     }

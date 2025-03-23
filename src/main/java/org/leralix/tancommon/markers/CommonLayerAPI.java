@@ -2,11 +2,8 @@ package org.leralix.tancommon.markers;
 
 
 
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class CommonLayerAPI {
-
 
     public abstract boolean isWorking();
 

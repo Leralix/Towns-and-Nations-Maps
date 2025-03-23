@@ -1,15 +1,15 @@
 package org.leralix.tancommon.storage;
 
-import org.leralix.tan.dataclass.PlayerData;
-import org.leralix.tan.dataclass.territory.TownData;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
+import org.tan.api.interfaces.TanPlayer;
+import org.tan.api.interfaces.TanTown;
 
 
 import java.util.*;
 
 public class TownDescription {
 
-    private String ID;
+    private UUID id;
     private String name;
     private final int daysSinceCreation;
     private String description;
@@ -22,40 +22,39 @@ public class TownDescription {
     private List<String> membersName;
 
 
-    public TownDescription(TownData townData){
+    public TownDescription(TanTown town){
 
-        String ID = townData.getID();
-        String name = townData.getName();
-
+        Collection<TanPlayer> players = town.getMembers();
 
         Date today = new Date();
-        Date creationDate = new Date(townData.getDateTimeCreated());
+        Date creationDate = new Date(town.getCreationDate());
 
         long diffInDays = today.getTime() - creationDate.getTime();
         int nbDays = (int) (diffInDays / (1000 * 60 * 60 * 24));
 
 
-        int numberOfChunks = townData.getNumberOfClaimedChunk();
-        int townLevel = townData.getLevel().getTownLevel();
-        int nbPlayer = townData.getPlayerIDList().size();
-        String description = townData.getDescription();
-        PlayerData owner = townData.getLeaderData();
+        int numberOfChunks = town.getNumberOfClaimedChunk();
+        int townLevel = town.getLevel();
+        int nbPlayer = players.size();
+        String description = town.getDescription();
+        TanPlayer owner = town.getOwner();
         if(owner == null)
             ownerName = "";
         else
-            ownerName = owner.getName();
+            ownerName = owner.getNameStored();
 
         String regionName = "No region";
-        if(townData.haveOverlord())
-            regionName = townData.getOverlord().getName();
+        if(town.haveOverlord())
+            regionName = town.getOverlord().getName();
+
         List<String> playersName = new ArrayList<>();
-        for(PlayerData player : townData.getPlayerDataList()){
-            playersName.add(player.getName());
+        for(TanPlayer player : players){
+            playersName.add(player.getNameStored());
         }
 
 
-        this.ID = ID;
-        this.name = name;
+        this.id = town.getUUID();
+        this.name = town.getName();
         this.daysSinceCreation = nbDays;
         this.description = description;
         this.numberOfClaims = numberOfChunks;
@@ -66,8 +65,8 @@ public class TownDescription {
         this.membersName = playersName;
     }
 
-    public String getID(){
-        return ID;
+    public UUID getId(){
+        return id;
     }
 
     public String getName() {
@@ -95,26 +94,27 @@ public class TownDescription {
     }
 
     public String getChunkDescription(){
-        String description = TownsAndNationsMapCommon.getPlugin().getConfig().getString("town_infowindow", "Config not found - town");
+        String message = TownsAndNationsMapCommon.getPlugin().getConfig().getString("town_infowindow", "Config not found - town");
 
-        description = description.replace("%TOWN_NAME%", this.name);
-        description = description.replace("%DAYS_SINCE_CREATION%", String.valueOf(this.daysSinceCreation));
-        description = description.replace("%DESCRIPTION%", this.description);
-        description = description.replace("%NUMBER_CLAIMS%", String.valueOf(this.numberOfClaims));
-        description = description.replace("%TOWN_LEVEL%", String.valueOf(this.townLevel));
-        description = description.replace("%REGION_NAME%", Objects.requireNonNullElse(regionName, "No region"));
-        description = description.replace("%TOWN_LEADER%", ownerName);
+        message = message.replace("%TOWN_NAME%", this.name);
+        message = message.replace("%DAYS_SINCE_CREATION%", String.valueOf(this.daysSinceCreation));
+        message = message.replace("%DESCRIPTION%", this.description);
+        message = message.replace("%NUMBER_CLAIMS%", String.valueOf(this.numberOfClaims));
+        message = message.replace("%TOWN_LEVEL%", String.valueOf(this.townLevel));
+        message = message.replace("%REGION_NAME%", Objects.requireNonNullElse(regionName, "No region"));
+        message = message.replace("%TOWN_LEADER%", ownerName);
+        message  = message.replace("%MEMBERS_LIST%", getMemberList());
 
-        //Member list
+        return message;
+    }
+
+    private String getMemberList() {
         StringBuilder memberList = new StringBuilder();
         for(String member : getMembersName()){
             memberList.append(member).append(", ");
         }
-        description  = description.replace("%MEMBERS_LIST%", memberList);
-
-        return description;
+        return memberList.toString();
     }
-
 
 
 }

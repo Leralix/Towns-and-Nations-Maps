@@ -2,11 +2,11 @@ package org.leralix.tansquaremap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.leralix.tan.dataclass.Landmark;
-import org.leralix.tan.dataclass.territory.TerritoryData;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
 import org.leralix.tancommon.storage.TanKey;
+import org.tan.api.interfaces.TanLandmark;
+import org.tan.api.interfaces.TanTerritory;
 import xyz.jpenilla.squaremap.api.*;
 import xyz.jpenilla.squaremap.api.Point;
 import xyz.jpenilla.squaremap.api.marker.Marker;
@@ -70,30 +70,30 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
     }
 
     @Override
-    public void registerNewLandmark(Landmark landmark) {
+    public void registerNewLandmark(TanLandmark landmark) {
         Point point = Point.of(landmark.getLocation().getX(), landmark.getLocation().getZ());
 
         MarkerOptions markerOptions = MarkerOptions.builder().
                 hoverTooltip(generateDescription(landmark)).
                 build();
 
-        String imageKey = landmark.getOwnerID() != null ?
+        String imageKey = landmark.isOwned() ?
                 IconType.LANDMARK_CLAIMED.getFileName():
                 IconType.LANDMARK_UNCLAIMED.getFileName();
 
         Marker marker = Marker.icon(point, Key.of(imageKey),16).markerOptions(markerOptions);
 
         TanKey key = new TanKey(landmark.getLocation().getWorld());
-        landmarkLayerMap.get(key).addMarker(Key.of(landmark.getID()), marker);
+        landmarkLayerMap.get(key).addMarker(Key.of(landmark.getUUID().toString()), marker);
     }
 
     @Override
-    public void registerNewArea(String polyId, TerritoryData territoryData, boolean b, String worldName, double[] x, double[] z, String description) {
+    public void registerNewArea(String polyId, TanTerritory territoryData, boolean b, String worldName, double[] x, double[] z, String description) {
         List<Point> pointList = new ArrayList<>();
         for(int i = 0; i < x.length; i++) {
             pointList.add(Point.of(x[i], z[i]));
         }
-        Color color = territoryData.getChunkColor().getColor();
+        Color color = new Color(territoryData.getColor().asRGB());
 
 
         MarkerOptions options = MarkerOptions.builder().

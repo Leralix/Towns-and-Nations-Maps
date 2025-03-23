@@ -2,21 +2,22 @@ package org.leralix.tancommon.storage;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class TownDescriptionStorage {
 
-    private static final Map<String, TownDescription> townDescriptionData = new HashMap<>();
+    private TownDescriptionStorage() {
+        throw new IllegalStateException("Utility class");
+    }
 
+    private static final Map<UUID, TownDescription> townDescriptionData = new HashMap<>();
 
     public static void add(TownDescription data){
-        townDescriptionData.put(data.getID(), data);
-    }
-    public static TownDescription get(String name){
-        return townDescriptionData.get(name);
+        townDescriptionData.put(data.getId(), data);
     }
 
-    public static void remove(String name){
-        townDescriptionData.remove(name);
+    public static TownDescription get(UUID uuid){
+        return townDescriptionData.get(uuid);
     }
 
 }

@@ -2,13 +2,10 @@ package org.leralix.tancommon.markers;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.leralix.tan.dataclass.Landmark;
-import org.leralix.tan.dataclass.territory.TerritoryData;
-import org.leralix.tan.storage.stored.TownDataStorage;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
+import org.tan.api.interfaces.TanLandmark;
+import org.tan.api.interfaces.TanTerritory;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class CommonMarkerRegister {
@@ -41,18 +38,18 @@ public abstract class CommonMarkerRegister {
     protected abstract void setupChunkLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName);
 
     public abstract boolean isWorking();
-    public abstract void registerNewLandmark(Landmark landmark);
-    public abstract void registerNewArea(String polyid, TerritoryData territoryData, boolean b, String worldName, double[] x, double[] z, String infoWindowPopup);
-    protected String generateDescription(Landmark landmark) {
+    public abstract void registerNewLandmark(TanLandmark landmark);
+    public abstract void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, double[] x, double[] z, String infoWindowPopup);
+    protected String generateDescription(TanLandmark landmark) {
 
         String res = TownsAndNationsMapCommon.getPlugin().getConfig().getString("landmark_infowindow");
         if(res == null)
             return "No description";
 
-        ItemStack reward = landmark.getRessources();
+        ItemStack reward = landmark.getItem();
         String ownerName;
-        if(landmark.hasOwner())
-            ownerName = TownDataStorage.get(landmark.getOwnerID()).getName();
+        if(landmark.isOwned())
+            ownerName = landmark.getOwner().getName();
         else
             ownerName = "No owner";
 

@@ -1,16 +1,15 @@
 package org.leralix.tancommon.storage;
 
-import org.bukkit.World;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.leralix.tan.TownsAndNations;
-import org.leralix.tan.dataclass.chunk.RegionClaimedChunk;
-import org.leralix.tan.dataclass.chunk.TownClaimedChunk;
-import org.leralix.tan.dataclass.territory.RegionData;
-import org.leralix.tan.dataclass.territory.TerritoryData;
-import org.leralix.tan.dataclass.territory.TownData;
+import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonAreaMarker;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.style.AreaStyle;
+import org.tan.api.interfaces.TanClaimedChunk;
+import org.tan.api.interfaces.TanRegion;
+import org.tan.api.interfaces.TanTerritory;
+import org.tan.api.interfaces.TanTown;
 
 import java.util.*;
 
@@ -25,37 +24,38 @@ public class ChunkManager {
 
     public ChunkManager(CommonMarkerRegister markerRegister) {
         this.commonMarkerRegister = markerRegister;
-        FileConfiguration fc = TownsAndNations.getPlugin().getConfig();
+        FileConfiguration fc = TownsAndNationsMapCommon.getPlugin().getConfig();
         this.townAreaStyle = new AreaStyle(fc, "town_fieldStyle");
         this.regionAreaStyle = new AreaStyle(fc, "region_fieldStyle");
     }
 
-    public void updateTown(TownData townData) {
+
+
+    private void updateTerritory(TanTerritory town, String infoWindowPopup) {
 
         int polyIndex = 0; /* Index of polygon for when a town has multiple shapes. */
 
-        Collection<TownClaimedChunk> townClaimedChunks = townData.getClaims();
+        Collection<TanClaimedChunk> townClaimedChunks = town.getClaimedChunks();
         if(townClaimedChunks.isEmpty())
             return;
 
-        String infoWindowPopup = TownDescriptionStorage.get(townData.getID()).getChunkDescription();
 
-        HashMap<String, TileFlags> worldNameShapeMap = new HashMap<>();
-        LinkedList<TownClaimedChunk> claimedChunksToDraw = new LinkedList<>();
+        HashMap<UUID, TileFlags> worldNameShapeMap = new HashMap<>();
+        LinkedList<TanClaimedChunk> claimedChunksToDraw = new LinkedList<>();
 
-        World currentWorld = null;
+        UUID currentWorldUUID = null;
         TileFlags currentShape = null;
 
-
-        for (TownClaimedChunk townClaimedChunk : townClaimedChunks) {
-            if (townClaimedChunk.getWorld() != currentWorld) {
-                String worldName = townClaimedChunk.getWorld().getName();
-                currentShape = worldNameShapeMap.get(worldName);
+        //Registering all the claimed chunks to draw
+        for (TanClaimedChunk townClaimedChunk : townClaimedChunks) {
+            if (townClaimedChunk.getWorldUUID() != currentWorldUUID) {
+                UUID worldUUID = townClaimedChunk.getWorldUUID();
+                currentShape = worldNameShapeMap.get(worldUUID);
                 if (currentShape == null) {
                     currentShape = new TileFlags();
-                    worldNameShapeMap.put(worldName, currentShape);
+                    worldNameShapeMap.put(worldUUID, currentShape);
                 }
-                currentWorld = townClaimedChunk.getWorld();
+                currentWorldUUID = townClaimedChunk.getWorldUUID();
             }
             if (currentShape == null) {
                 currentShape = new TileFlags();
@@ -64,18 +64,19 @@ public class ChunkManager {
             claimedChunksToDraw.addLast(townClaimedChunk);
         }
 
+        //Drawing all the claimed chunks
         while(claimedChunksToDraw != null) {
-            LinkedList<TownClaimedChunk> ourTownBlocks = null;
-            LinkedList<TownClaimedChunk> townBlockLeftToDraw = null;
+            LinkedList<TanClaimedChunk> ourTownBlocks = null;
+            LinkedList<TanClaimedChunk> townBlockLeftToDraw = null;
             TileFlags ourShape = null;
             int minx = Integer.MAX_VALUE;
             int minz = Integer.MAX_VALUE;
-            for(TownClaimedChunk claimedChunk : claimedChunksToDraw) {
+            for(TanClaimedChunk claimedChunk : claimedChunksToDraw) {
                 int tbX = claimedChunk.getX();
                 int tbZ = claimedChunk.getZ();
-                if(ourShape == null && claimedChunk.getWorld() != currentWorld) {
-                        currentWorld = claimedChunk.getWorld();
-                        currentShape = worldNameShapeMap.get(currentWorld.getName());
+                if(ourShape == null && claimedChunk.getWorldUUID() != currentWorldUUID) {
+                        currentWorldUUID = claimedChunk.getWorldUUID();
+                        currentShape = worldNameShapeMap.get(currentWorldUUID);
                     }
 
                 /* If we need to start shape, and this block is not part of one yet */
@@ -87,7 +88,7 @@ public class ChunkManager {
                     minx = tbX; minz = tbZ;
                 }
                 /* If shape found, and we're in it, add to our node list */
-                else if((ourShape != null) && (claimedChunk.getWorld() == currentWorld) &&
+                else if((ourShape != null) && (claimedChunk.getWorldUUID() == currentWorldUUID) &&
                         (ourShape.getFlag(tbX, tbZ))) {
                     ourTownBlocks.add(claimedChunk);
                     if(tbX < minx) {
@@ -105,89 +106,19 @@ public class ChunkManager {
             }
             claimedChunksToDraw = townBlockLeftToDraw; /* Replace list (null if no more to process) */
             if(ourShape != null) {
-                polyIndex = traceTerritoryOutline(townData, polyIndex, infoWindowPopup, currentWorld.getName(), ourShape, minx, minz);
+                polyIndex = traceTerritoryOutline(town, polyIndex, infoWindowPopup, Bukkit.getWorld(currentWorldUUID).getName(), ourShape, minx, minz);
             }
         }
 
     }
 
-    public void updateRegion(RegionData regionData) {
-        int polyIndex = 0; /* Index of polygon for when a town has multiple shapes. */
-
-        Collection<RegionClaimedChunk> townClaimedChunks = regionData.getClaims();
-        if(townClaimedChunks.isEmpty())
-            return;
-
-        String infoWindowPopup = RegionDescriptionStorage.get(regionData.getID()).getChunkDescription();
-
-        HashMap<String, TileFlags> worldNameShapeMap = new HashMap<>();
-        LinkedList<RegionClaimedChunk> claimedChunksToDraw = new LinkedList<>();
-
-        World currentWorld = null;
-        TileFlags currentShape = null;
-
-
-        for(RegionClaimedChunk regionClaimedChunk : townClaimedChunks) {
-            if(regionClaimedChunk.getWorld() != currentWorld) { /* Not same world */
-                String worldName = regionClaimedChunk.getWorld().getName();
-                currentShape = worldNameShapeMap.get(worldName);  /* Find existing */
-                if(currentShape == null) {
-                    currentShape = new TileFlags();
-                    worldNameShapeMap.put(worldName, currentShape);   /* Add fresh one */
-                }
-                currentWorld = regionClaimedChunk.getWorld();
-            }
-            currentShape.setFlag(regionClaimedChunk.getX(), regionClaimedChunk.getZ(), true); /* Set flag for block */
-            claimedChunksToDraw.addLast(regionClaimedChunk);
-        }
-
-        while(claimedChunksToDraw != null) {
-            LinkedList<RegionClaimedChunk> ourTownBlocks = null;
-            LinkedList<RegionClaimedChunk> townBlockLeftToDraw = null;
-            TileFlags ourShape = null;
-            int minx = Integer.MAX_VALUE;
-            int minz = Integer.MAX_VALUE;
-            for(RegionClaimedChunk claimedChunk : claimedChunksToDraw) {
-                int tbX = claimedChunk.getX();
-                int tbZ = claimedChunk.getZ();
-                if(ourShape == null) {   /* If not started, switch to world for this block first */
-                    if(claimedChunk.getWorld() != currentWorld) {
-                        currentWorld = claimedChunk.getWorld();
-                        currentShape = worldNameShapeMap.get(currentWorld.getName());
-                    }
-                }
-                /* If we need to start shape, and this block is not part of one yet */
-                if((ourShape == null) && currentShape.getFlag(tbX, tbZ)) {
-                    ourShape = new TileFlags();  /* Create map for shape */
-                    ourTownBlocks = new LinkedList<>();
-                    floodFillTarget(currentShape, ourShape, tbX, tbZ);   /* Copy shape */
-                    ourTownBlocks.add(claimedChunk); /* Add it to our node list */
-                    minx = tbX; minz = tbZ;
-                }
-                /* If shape found, and we're in it, add to our node list */
-                else if((ourShape != null) && (claimedChunk.getWorld() == currentWorld) &&
-                        (ourShape.getFlag(tbX, tbZ))) {
-                    ourTownBlocks.add(claimedChunk);
-                    if(tbX < minx) {
-                        minx = tbX; minz = tbZ;
-                    }
-                    else if((tbX == minx) && (tbZ < minz)) {
-                        minz = tbZ;
-                    }
-                }
-                else {  /* Else, keep it in the list for the next polygon */
-                    if(townBlockLeftToDraw == null)
-                        townBlockLeftToDraw = new LinkedList<>();
-                    townBlockLeftToDraw.add(claimedChunk);
-                }
-            }
-            claimedChunksToDraw = townBlockLeftToDraw; /* Replace list (null if no more to process) */
-            if(ourShape != null) {
-                polyIndex = traceTerritoryOutline(regionData, polyIndex, infoWindowPopup, currentWorld.getName(), ourShape, minx, minz);
-            }
-        }
-
-
+    public void updateTown(TanTown town){
+        String infoWindowPopup = RegionDescriptionStorage.get(town.getUUID()).getChunkDescription();
+        updateTerritory(town, infoWindowPopup);
+    }
+    public void updateRegion(TanRegion region) {
+        String infoWindowPopup = RegionDescriptionStorage.get(region.getUUID()).getChunkDescription();
+        updateTerritory(region, infoWindowPopup);
     }
 
 
@@ -214,7 +145,7 @@ public class ChunkManager {
         }
     }
 
-    private int traceTerritoryOutline(TerritoryData territoryData, int polyIndex, String infoWindowPopup, String worldName, TileFlags ourShape, int minx, int minz) {
+    private int traceTerritoryOutline(TanTerritory territoryData, int polyIndex, String infoWindowPopup, String worldName, TileFlags ourShape, int minx, int minz) {
 
         double[] x;
         double[] z;
@@ -287,7 +218,7 @@ public class ChunkManager {
             }
         }
         /* Build information for specific area */
-        String polyid = territoryData.getID() + "_" + polyIndex;
+        String polyid = territoryData.getUUID() + "_" + polyIndex;
         int sz = linelist.size();
         x = new double[sz];
         z = new double[sz];
@@ -301,10 +232,5 @@ public class ChunkManager {
 
         polyIndex++;
         return polyIndex;
-    }
-
-    private void addStyle(TerritoryData territoryData, CommonAreaMarker m) {
-        m.setLineStyle(townAreaStyle.getBaseStrokeWeight(), townAreaStyle.getStrokeOpacity(), territoryData.getChunkColorCode());
-        m.setFillStyle(townAreaStyle.getFillOpacity(), territoryData.getChunkColorCode());
     }
 }

@@ -11,10 +11,10 @@ import de.bluecolored.bluemap.api.math.Shape;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.leralix.tan.dataclass.Landmark;
-import org.leralix.tan.dataclass.territory.TerritoryData;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.storage.TanKey;
+import org.tan.api.interfaces.TanLandmark;
+import org.tan.api.interfaces.TanTerritory;
 
 import java.util.*;
 import java.util.List;
@@ -78,7 +78,7 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
     }
 
     @Override
-    public void registerNewLandmark(Landmark landmark) {
+    public void registerNewLandmark(TanLandmark landmark) {
         Location location = landmark.getLocation();
         World world = location.getWorld();
         POIMarker marker = POIMarker.builder()
@@ -88,18 +88,18 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
                 .maxDistance(2000)
                 .build();
 
-        this.landmarkLayerMap.get(new TanKey(world)).getMarkers().put(landmark.getID(),marker);
+        this.landmarkLayerMap.get(new TanKey(world)).getMarkers().put(landmark.getUUID().toString(),marker);
     }
 
     @Override
-    public void registerNewArea(String polyid, TerritoryData territoryData, boolean b, String worldName, double[] x, double[] z, String infoWindowPopup) {
+    public void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, double[] x, double[] z, String infoWindowPopup) {
 
         World world = Bukkit.getWorld(worldName);
         if (world == null) {
             return;
         }
 
-        Color color = new Color(territoryData.getChunkColor().getColor().getRGB());
+        Color color = new Color(territoryData.getColor().asRGB());
         Color lineColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), 0.8f);
         Color fillColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f);
 

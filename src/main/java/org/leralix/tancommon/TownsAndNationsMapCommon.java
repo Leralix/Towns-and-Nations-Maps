@@ -13,6 +13,7 @@ import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.storage.ChunkManager;
 import org.leralix.tancommon.update.UpdateChunks;
 import org.leralix.tancommon.update.UpdateLandMarks;
+import org.tan.api.TanAPI;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,13 +33,15 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
     private UpdateLandMarks updateLandMarks;
     private UpdateChunks updateChunks;
 
+    private final String subMapName = "[TaN - " + getSubMapName() + "] - ";
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
         // Plugin startup logic
         plugin = this;
 
-        logger.info("[TaN - " + getSubMapName() + "] - Loading Plugin");
+        logger.info(subMapName + "Loading Plugin");
         new Metrics(this, getBStatID());
 
 
@@ -46,15 +49,16 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         //Get T&N
         Plugin tanPlugin = pm.getPlugin("TownsAndNations");
         if (tanPlugin == null || !tanPlugin.isEnabled()) {
-            logger.severe("[TaN - " + getSubMapName() + "] - Cannot find Towns and Nations, check your logs to see if it enabled properly?!");
+            logger.severe(subMapName + "Cannot find Towns and Nations, check your logs to see if it enabled properly?!");
             setEnabled(false);
             return;
         }
 
+        TanAPI api = TanAPI.getInstance();
 
-        PluginVersion minTanVersion = TownsAndNations.getPlugin().getMinimumSupportingDynmap();
+        PluginVersion minTanVersion = api.getMinimumSupportingMapPlugin();
         if(pluginVersion.isOlderThan(minTanVersion)){
-            logger.log(Level.SEVERE,"[TaN - " + getSubMapName() + "] - Towns and Nations is not compatible with this version of tanmap (minimum version: {0})", minTanVersion);
+            logger.log(Level.SEVERE,subMapName + "Towns and Nations is not compatible with this version of tanmap (minimum version: {0})", minTanVersion);
             setEnabled(false);
             return;
         }
@@ -63,7 +67,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         checkConfigVersion();
         initialise();
 
-        logger.info("[TaN - " + getSubMapName() + "] - Plugin is running");
+        logger.info(subMapName + "Plugin is running");
     }
 
     private void checkConfigVersion() {
@@ -79,7 +83,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         int internalConfigVersion = internalConfig.getInt("config-version", 999);
 
         if(internalConfigVersion != configVersion){
-            plugin.getLogger().info("[TaN - " + getSubMapName() + "] - Updating config from version " + configVersion + " to version version " + internalConfigVersion);
+            plugin.getLogger().info(subMapName + "Updating config from version " + configVersion + " to version version " + internalConfigVersion);
             plugin.saveResource(configFileName, true);
             getConfig().set("config-version", internalConfigVersion);
         }
@@ -90,7 +94,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         markerRegister = createMarkerRegister();
 
         if(!markerRegister.isWorking()){
-            logger.severe("[TaN - " + getSubMapName() + "] - Cannot find marker API, retrying in 5 seconds");
+            logger.severe(subMapName +  "Cannot find marker API, retrying in 5 seconds");
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -99,7 +103,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
             }.runTaskLater(this, 100);
             return;
         }
-        logger.info("[TaN - " + getSubMapName() + "] - Marker API found");
+        logger.info(subMapName +  "Marker API found");
 
 
 

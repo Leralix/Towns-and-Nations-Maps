@@ -1,9 +1,9 @@
 package org.leralix.tansquaremap.markers;
 
-import org.leralix.tan.dataclass.Landmark;
 import org.leralix.tancommon.markers.CommonAreaMarker;
 import org.leralix.tancommon.markers.CommonMarkerSet;
 import org.leralix.tancommon.markers.IconType;
+import org.tan.api.interfaces.TanLandmark;
 import xyz.jpenilla.squaremap.api.Key;
 import xyz.jpenilla.squaremap.api.Point;
 import xyz.jpenilla.squaremap.api.SimpleLayerProvider;
@@ -32,20 +32,20 @@ public class SquaremapLayer extends CommonMarkerSet {
     }
 
     @Override
-    public void createLandmark(Landmark landmark, String name, String worldName, int x, int y, int z, boolean b) {
+    public void createLandmark(TanLandmark landmark, String name, String worldName, int x, int y, int z, boolean b) {
         Point point = Point.of(x, z);
 
         MarkerOptions markerOptions = MarkerOptions.builder().
                 hoverTooltip(generateDescription(landmark)).
                 build();
 
-        String imageKey = landmark.getOwnerID() != null ?
+        String imageKey = landmark.isOwned() ?
                 IconType.LANDMARK_CLAIMED.getFileName():
                 IconType.LANDMARK_UNCLAIMED.getFileName();
 
         Marker marker = Marker.icon(point,Key.of(imageKey),16).markerOptions(markerOptions);
 
-        layerMap.get(Key.of(worldName)).addMarker(Key.of(landmark.getID()), marker);
+        layerMap.get(Key.of(worldName)).addMarker(Key.of(landmark.getUUID().toString()), marker);
 
     }
 

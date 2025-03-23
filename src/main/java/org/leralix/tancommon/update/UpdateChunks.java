@@ -1,16 +1,11 @@
 package org.leralix.tancommon.update;
 
 import org.bukkit.plugin.Plugin;
-import org.leralix.tan.dataclass.territory.RegionData;
-import org.leralix.tan.dataclass.territory.TownData;
-import org.leralix.tan.storage.stored.RegionDataStorage;
-import org.leralix.tan.storage.stored.TownDataStorage;
-import org.leralix.tancommon.markers.CommonAreaMarker;
 import org.leralix.tancommon.storage.*;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.tan.api.TanAPI;
+import org.tan.api.interfaces.TanRegion;
+import org.tan.api.interfaces.TanTown;
 
 public class UpdateChunks implements Runnable {
 
@@ -35,26 +30,21 @@ public class UpdateChunks implements Runnable {
 
     public void update() {
 
+        TanAPI tanAPI = TanAPI.getInstance();
 
         //Update town and regions descriptions
-        for(TownData townData : TownDataStorage.getAll()){
+        for(TanTown townData : tanAPI.getTerritoryManager().getTowns()){
             TownDescription townDescription = new TownDescription(townData);
             TownDescriptionStorage.add(townDescription);
-        }
-
-        for(RegionData regionData : RegionDataStorage.getAll()){
-            RegionDescription regionDescription = new RegionDescription(regionData);
-            RegionDescriptionStorage.add(regionDescription);
-        }
-
-
-        for(TownData townData : TownDataStorage.getTownMap().values()){
             chunkManager.updateTown(townData);
         }
 
-        for(RegionData regionData : RegionDataStorage.getAll()){
+        for(TanRegion regionData : tanAPI.getTerritoryManager().getRegions()){
+            RegionDescription regionDescription = new RegionDescription(regionData);
+            RegionDescriptionStorage.add(regionDescription);
             chunkManager.updateRegion(regionData);
         }
+
 
         Plugin plugin = TownsAndNationsMapCommon.getPlugin();
         if(updatePeriod > 0)
