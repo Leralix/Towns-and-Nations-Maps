@@ -9,17 +9,17 @@ import java.util.*;
 
 public class TownDescription {
 
-    private UUID id;
-    private String name;
+    private final String id;
+    private final String name;
     private final int daysSinceCreation;
-    private String description;
+    private final String description;
     private final int numberOfClaims;
     private final int townLevel;
     private final int numberOfMembers;
-    private String ownerName;
-    private String regionName;
-    private String nationName;
-    private List<String> membersName;
+    private final String ownerName;
+    private final String regionName;
+    private final String nationName;
+    private final List<String> membersName;
 
 
     public TownDescription(TanTown town){
@@ -53,7 +53,7 @@ public class TownDescription {
         }
 
 
-        this.id = town.getUUID();
+        this.id = town.getID();
         this.name = town.getName();
         this.daysSinceCreation = nbDays;
         this.description = description;
@@ -65,7 +65,7 @@ public class TownDescription {
         this.membersName = playersName;
     }
 
-    public UUID getId(){
+    public String getId(){
         return id;
     }
 

@@ -88,7 +88,7 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
                 .maxDistance(2000)
                 .build();
 
-        this.landmarkLayerMap.get(new TanKey(world)).getMarkers().put(landmark.getUUID().toString(),marker);
+        this.landmarkLayerMap.get(new TanKey(world)).getMarkers().put(landmark.getID(),marker);
     }
 
     @Override

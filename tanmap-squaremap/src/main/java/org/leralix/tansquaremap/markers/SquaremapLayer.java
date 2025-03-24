@@ -45,7 +45,7 @@ public class SquaremapLayer extends CommonMarkerSet {
 
         Marker marker = Marker.icon(point,Key.of(imageKey),16).markerOptions(markerOptions);
 
-        layerMap.get(Key.of(worldName)).addMarker(Key.of(landmark.getUUID().toString()), marker);
+        layerMap.get(Key.of(worldName)).addMarker(Key.of(landmark.getID()), marker);
 
     }
 

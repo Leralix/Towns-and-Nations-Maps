@@ -2,7 +2,6 @@ package org.leralix.tancommon.storage;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class RegionDescriptionStorage {
 
@@ -10,13 +9,13 @@ public class RegionDescriptionStorage {
         throw new IllegalStateException("Utility class");
     }
 
-    private static final Map<UUID, RegionDescription> townDescriptionData = new HashMap<>();
+    private static final Map<String, RegionDescription> townDescriptionData = new HashMap<>();
 
     public static void add(RegionDescription data){
-        townDescriptionData.put(data.getUuid(), data);
+        townDescriptionData.put(data.getID(), data);
     }
-    public static RegionDescription get(UUID name){
-        return townDescriptionData.get(name);
+    public static RegionDescription get(String id){
+        return townDescriptionData.get(id);
     }
 
 }

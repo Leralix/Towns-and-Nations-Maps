@@ -33,12 +33,12 @@ public class DynmapMarkerSet extends CommonMarkerSet {
 
     @Override
     public void createLandmark(TanLandmark landmark, String name, String worldName, int x, int y, int z, boolean b) {
-        Marker marker = markerSet.findMarker(landmark.getUUID().toString());
+        Marker marker = markerSet.findMarker(landmark.getID());
         if (marker != null) {
             marker.deleteMarker();
         }
 
-        marker = markerSet.createMarker(landmark.getUUID().toString(), name, worldName, x, y, z, markerAPI.getMarkerIcon("diamond"), b);
+        marker = markerSet.createMarker(landmark.getID(), name, worldName, x, y, z, markerAPI.getMarkerIcon("diamond"), b);
         marker.setDescription(generateDescription(landmark));
 
     }

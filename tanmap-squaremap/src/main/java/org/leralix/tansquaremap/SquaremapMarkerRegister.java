@@ -84,7 +84,7 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
         Marker marker = Marker.icon(point, Key.of(imageKey),16).markerOptions(markerOptions);
 
         TanKey key = new TanKey(landmark.getLocation().getWorld());
-        landmarkLayerMap.get(key).addMarker(Key.of(landmark.getUUID().toString()), marker);
+        landmarkLayerMap.get(key).addMarker(Key.of(landmark.getID()), marker);
     }
 
     @Override

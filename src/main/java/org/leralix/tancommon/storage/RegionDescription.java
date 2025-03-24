@@ -8,7 +8,7 @@ import java.util.*;
 
 public class RegionDescription {
 
-    private final UUID uuid;
+    private final String uuid;
     private final String name;
     private final int daysSinceCreation;
     private final String description;
@@ -39,7 +39,7 @@ public class RegionDescription {
             townNames.add(townData.getName());
         }
 
-        this.uuid = regionData.getUUID();
+        this.uuid = regionData.getID();
         this.name = regionData.getName();
         this.daysSinceCreation = nbDays;
         this.description = regionData.getDescription();
@@ -50,7 +50,7 @@ public class RegionDescription {
         this.townListName = townNames;
     }
 
-    public UUID getUuid() {
+    public String getID() {
         return uuid;
     }
 

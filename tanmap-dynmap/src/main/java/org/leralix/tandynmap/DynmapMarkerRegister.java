@@ -52,13 +52,13 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
     @Override
     public void registerNewLandmark(TanLandmark landmark) {
 
-        Marker marker = landmarkMarkerSet.findMarker(landmark.getUUID().toString());
+        Marker marker = landmarkMarkerSet.findMarker(landmark.getID());
         if (marker != null) {
             marker.deleteMarker();
         }
 
         Location location = landmark.getLocation();
-        marker = landmarkMarkerSet.createMarker(landmark.getUUID().toString(), landmark.getName(), location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), dynmapLayerAPI.getMarkerIcon("diamond"), true);
+        marker = landmarkMarkerSet.createMarker(landmark.getID(), landmark.getName(), location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), dynmapLayerAPI.getMarkerIcon("diamond"), true);
         marker.setDescription(generateDescription(landmark));
     }
 
