@@ -14,7 +14,7 @@ subprojects {
         from rootProject.sourceSets.main.output
     }
 
-    def targetJavaVersion = project.name == "tanmap-bluemap" ? 21 : 17
+    def targetJavaVersion = 21
     java {
         def javaVersion = JavaVersion.toVersion(targetJavaVersion)
         sourceCompatibility = targetJavaVersion
@@ -64,6 +64,6 @@ allprojects {
     dependencies {
         compileOnly "org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT"
         compileOnly "io.github.leralix:sphere-lib:0.4.0"
-        compileOnly "io.github.leralix:tan-api:0.2.0"
+            compileOnly "io.github.leralix:tan-api:0.2.0"
     }
 }
