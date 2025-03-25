@@ -37,7 +37,6 @@ public class ChunkManager {
         int polyIndex = 0; /* Index of polygon for when a town has multiple shapes. */
 
         Collection<TanClaimedChunk> townClaimedChunks = territory.getClaimedChunks();
-        System.out.println("Claimed chunks: " + townClaimedChunks.size());
         if(townClaimedChunks.isEmpty())
             return;
 
@@ -69,7 +68,6 @@ public class ChunkManager {
 
         //Drawing all the claimed chunks
         while(claimedChunksToDraw != null) {
-            System.out.println("Test");
             LinkedList<TanClaimedChunk> ourTownBlocks = null;
             LinkedList<TanClaimedChunk> townBlockLeftToDraw = null;
             TileFlags ourShape = null;
