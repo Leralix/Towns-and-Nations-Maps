@@ -31,11 +31,10 @@ subprojects {
     }
 
     processResources {
-        def props = [version: version]
-        inputs.properties props
-        filteringCharset 'UTF-8'
-        filesMatching('plugin.yml') {
-            expand props
+        processResources {
+            filesMatching('plugin.yml') {
+                expand(version: rootProject.version) // Utilisation correcte
+            }
         }
     }
 }
@@ -65,13 +64,5 @@ allprojects {
         compileOnly "org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT"
         compileOnly "io.github.leralix:sphere-lib:0.4.0"
             compileOnly "io.github.leralix:tan-api:0.2.1"
-    }
-}
-
-processResources {
-    filesMatching("plugin.yml") {
-        expand(
-                'version': project.version
-        )
     }
 }
