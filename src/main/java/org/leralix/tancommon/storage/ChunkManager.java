@@ -17,20 +17,12 @@ import java.util.*;
 public class ChunkManager {
 
     private final CommonMarkerRegister commonMarkerRegister;
-    private final AreaStyle townAreaStyle;
-    private final AreaStyle regionAreaStyle;
-    private final Map<String, CommonAreaMarker> existingAreaMarkers = new HashMap<>();
 
     enum direction {XPLUS, ZPLUS, XMINUS, ZMINUS}
 
     public ChunkManager(CommonMarkerRegister markerRegister) {
         this.commonMarkerRegister = markerRegister;
-        FileConfiguration fc = TownsAndNationsMapCommon.getPlugin().getConfig();
-        this.townAreaStyle = new AreaStyle(fc, "town_fieldStyle");
-        this.regionAreaStyle = new AreaStyle(fc, "region_fieldStyle");
     }
-
-
 
     private void updateTerritory(TanTerritory territory, String infoWindowPopup) {
 
@@ -153,21 +145,58 @@ public class ChunkManager {
         String polyid = territoryData.getID() + "_" + polyIndex;
 
         PolygonCoordinate polygonCoordinate = createTerritoryPolygon(ourShape, minx, minz);
-        Collection<PolygonCoordinate> holes = createTerritoryHoles(ourShape, minx, minz);
+
+        System.out.println("polygonCoordinate du territoire :");
+        System.out.println(Arrays.toString(polygonCoordinate.getX()));
+        System.out.println(Arrays.toString(polygonCoordinate.getZ()));
+
+
+        Collection<PolygonCoordinate> holes = createTerritoryHoles(ourShape, polygonCoordinate, minx, minz);
+
+        PolygonCoordinate polygonTestCoordinate = holes.iterator().next();
 
         commonMarkerRegister.registerNewArea(polyid, territoryData, false, worldName, polygonCoordinate, infoWindowPopup, holes);
+        commonMarkerRegister.registerNewArea(polyid + "test", territoryData, false, worldName, polygonTestCoordinate, infoWindowPopup, holes);
+
 
         polyIndex++;
         return polyIndex;
     }
 
-    private Collection<PolygonCoordinate> createTerritoryHoles(TileFlags ourShape, int minx, int minz) {
+    private Collection<PolygonCoordinate> createTerritoryHoles(TileFlags ourShape, PolygonCoordinate computedShape, int minx, int minz) {
         Collection<PolygonCoordinate> holes = new ArrayList<>();
 
-        for(TileFlags tileFlags : ourShape.getHolesInShape()){
-            holes.add(createTerritoryPolygon(tileFlags, minx, minz));
+        int minX = computedShape.getSmallestX()/16;
+        int minZ = computedShape.getSmallestZ()/16;
+        int maxX = computedShape.getBiggestX()/16;
+        int maxZ = computedShape.getBiggestZ()/16;
+
+        GenericHoleDetector genericHoleDetector = new GenericHoleDetector(ourShape);
+        for(TileFlags tileFlags : genericHoleDetector.getHoles(minX, minZ, maxX, maxZ)){
+
+            int holeMinX = Integer.MAX_VALUE;
+            int holeMinZ = Integer.MAX_VALUE;
+
+            for (int x = minX; x <= maxX; x++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    if (tileFlags.getFlag(x, z)) {
+                        holeMinX = Math.min(holeMinX, x);
+                        holeMinZ = Math.min(holeMinZ, z);
+                    }
+                }
+            }
+
+            holes.add(createTerritoryPolygon(tileFlags, holeMinX, holeMinZ));
         }
+        System.out.println("nombre de trou : " + holes.size());
+        for(PolygonCoordinate polygonCoordinate : holes){
+            System.out.println("polygonCoordinate du TROU :");
+            System.out.println(Arrays.toString(polygonCoordinate.getX()));
+            System.out.println(Arrays.toString(polygonCoordinate.getZ()));
+        }
+
         return holes;
+
     }
 
     private PolygonCoordinate createTerritoryPolygon(TileFlags ourShape, int minx, int minz) {
