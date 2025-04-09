@@ -150,8 +150,29 @@ public class ChunkManager {
 
     private int traceTerritoryOutline(TanTerritory territoryData, int polyIndex, String infoWindowPopup, String worldName, TileFlags ourShape, int minx, int minz) {
 
-        double[] x;
-        double[] z;
+        String polyid = territoryData.getID() + "_" + polyIndex;
+
+        PolygonCoordinate polygonCoordinate = createTerritoryPolygon(ourShape, minx, minz);
+        Collection<PolygonCoordinate> holes = createTerritoryHoles(ourShape, minx, minz);
+
+        commonMarkerRegister.registerNewArea(polyid, territoryData, false, worldName, polygonCoordinate, infoWindowPopup, holes);
+
+        polyIndex++;
+        return polyIndex;
+    }
+
+    private Collection<PolygonCoordinate> createTerritoryHoles(TileFlags ourShape, int minx, int minz) {
+        Collection<PolygonCoordinate> holes = new ArrayList<>();
+
+        for(TileFlags tileFlags : ourShape.getHolesInShape()){
+            holes.add(createTerritoryPolygon(tileFlags, minx, minz));
+        }
+        return holes;
+    }
+
+    private PolygonCoordinate createTerritoryPolygon(TileFlags ourShape, int minx, int minz) {
+        int[] x;
+        int[] z;
         /* Trace outline of blocks - start from minx, minz going to x+ */
         int init_x = minx;
         int init_z = minz;
@@ -221,19 +242,16 @@ public class ChunkManager {
             }
         }
         /* Build information for specific area */
-        String polyid = territoryData.getID() + "_" + polyIndex;
         int sz = linelist.size();
-        x = new double[sz];
-        z = new double[sz];
+        x = new int[sz];
+        z = new int[sz];
         for(int i = 0; i < sz; i++) {
             int[] line = linelist.get(i);
-            x[i] = (double)line[0] * (double)16;
-            z[i] = (double)line[1] * (double)16;
+            x[i] = line[0] * 16;
+            z[i] = line[1] * 16;
         }
-
-        commonMarkerRegister.registerNewArea(polyid, territoryData, false, worldName, x, z, infoWindowPopup);
-
-        polyIndex++;
-        return polyIndex;
+        return new PolygonCoordinate(x, z);
     }
+
+
 }

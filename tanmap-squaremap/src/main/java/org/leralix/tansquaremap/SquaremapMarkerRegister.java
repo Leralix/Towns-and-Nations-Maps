@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
+import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.leralix.tancommon.storage.TanKey;
 import org.tan.api.interfaces.TanLandmark;
 import org.tan.api.interfaces.TanTerritory;
@@ -88,7 +89,11 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
     }
 
     @Override
-    public void registerNewArea(String polyId, TanTerritory territoryData, boolean b, String worldName, double[] x, double[] z, String description) {
+    public void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, PolygonCoordinate coordinates, String infoWindowPopup, Collection<PolygonCoordinate> holes){
+
+        double[] x = Arrays.stream(coordinates.getX()).asDoubleStream().toArray();
+        double[] z = Arrays.stream(coordinates.getZ()).asDoubleStream().toArray();
+
         List<Point> pointList = new ArrayList<>();
         for(int i = 0; i < x.length; i++) {
             pointList.add(Point.of(x[i], z[i]));
@@ -102,7 +107,7 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
                 strokeColor(color).
                 strokeOpacity(0.8).
                 strokeWeight(2).
-                hoverTooltip(description).
+                hoverTooltip(infoWindowPopup).
                 build();
 
         Marker marker = Marker.polygon(pointList).markerOptions(options);
@@ -110,7 +115,7 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
 
 
         TanKey key = new TanKey(Bukkit.getWorld(worldName));
-        chunkLayerMap.get(key).addMarker(Key.of(polyId), marker);
+        chunkLayerMap.get(key).addMarker(Key.of(polyid), marker);
     }
 
     @Override

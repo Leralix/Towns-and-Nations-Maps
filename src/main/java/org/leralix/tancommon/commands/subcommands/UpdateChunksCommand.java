@@ -1,8 +1,8 @@
 package org.leralix.tancommon.commands.subcommands;
 
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
+import org.leralix.lib.commands.SubCommand;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
-import org.leralix.tancommon.commands.SubCommand;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,14 +22,16 @@ public class UpdateChunksCommand extends SubCommand {
     public String getSyntax() {
         return "/tanmap update";
     }
+
     @Override
-    public List<String> getTabCompleteSuggestions(Player player, String[] args){
+    public List<String> getTabCompleteSuggestions(CommandSender commandSender, String s, String[] strings) {
         return Collections.emptyList();
     }
+
     @Override
-    public void perform(Player player, String[] args){
+    public void perform(CommandSender commandSender, String[] strings) {
         TownsAndNationsMapCommon.getPlugin().updateDynmap();
-        player.sendMessage("Map updated");
+        commandSender.sendMessage("Map updated");
     }
 
 }

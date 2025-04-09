@@ -9,10 +9,13 @@ import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
+import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.tan.api.interfaces.TanLandmark;
 import org.tan.api.interfaces.TanTerritory;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class DynmapMarkerRegister extends CommonMarkerRegister {
@@ -63,11 +66,15 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
     }
 
     @Override
-    public void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, double[] x, double[] z, String infoWindowPopup) {
+    public void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, PolygonCoordinate coordinates, String infoWindowPopup, Collection<PolygonCoordinate> holes){
        AreaMarker areaMarker = chunkMarkerSet.findAreaMarker(polyid);
         if(areaMarker != null){
             areaMarker.deleteMarker();
         }
+
+        double[] x = Arrays.stream(coordinates.getX()).asDoubleStream().toArray();
+        double[] z = Arrays.stream(coordinates.getZ()).asDoubleStream().toArray();
+
 
         areaMarker = chunkMarkerSet.createAreaMarker(polyid, territoryData.getName(), b, worldName, x, z, false);
         Color chunkColor = territoryData.getColor();

@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
+import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.leralix.tancommon.storage.TanKey;
 import org.tan.api.interfaces.TanLandmark;
 import org.tan.api.interfaces.TanTerritory;
@@ -92,12 +93,15 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
     }
 
     @Override
-    public void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, double[] x, double[] z, String infoWindowPopup) {
+    public void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, PolygonCoordinate coordinates, String infoWindowPopup, Collection<PolygonCoordinate> holes){
 
         World world = Bukkit.getWorld(worldName);
         if (world == null) {
             return;
         }
+
+        int[] x = coordinates.getX();
+        int[] z = coordinates.getZ();
 
         Color color = new Color(territoryData.getColor().asRGB());
         Color lineColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), 0.8f);

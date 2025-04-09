@@ -3,9 +3,11 @@ package org.leralix.tancommon.markers;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
+import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.tan.api.interfaces.TanLandmark;
 import org.tan.api.interfaces.TanTerritory;
 
+import java.util.Collection;
 import java.util.List;
 
 public abstract class CommonMarkerRegister {
@@ -38,8 +40,11 @@ public abstract class CommonMarkerRegister {
     protected abstract void setupChunkLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName);
 
     public abstract boolean isWorking();
+
     public abstract void registerNewLandmark(TanLandmark landmark);
-    public abstract void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, double[] x, double[] z, String infoWindowPopup);
+
+    public abstract void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, PolygonCoordinate coordinates, String infoWindowPopup, Collection<PolygonCoordinate> holes);
+
     protected String generateDescription(TanLandmark landmark) {
 
         String res = TownsAndNationsMapCommon.getPlugin().getConfig().getString("landmark_infowindow");
