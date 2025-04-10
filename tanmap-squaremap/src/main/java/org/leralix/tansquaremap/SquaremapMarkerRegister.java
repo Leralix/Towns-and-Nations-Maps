@@ -2,6 +2,7 @@ package org.leralix.tansquaremap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
 import org.leralix.tancommon.storage.PolygonCoordinate;
@@ -91,13 +92,14 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
     @Override
     public void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, PolygonCoordinate coordinates, String infoWindowPopup, Collection<PolygonCoordinate> holes){
 
-        double[] x = Arrays.stream(coordinates.getX()).asDoubleStream().toArray();
-        double[] z = Arrays.stream(coordinates.getZ()).asDoubleStream().toArray();
 
-        List<Point> pointList = new ArrayList<>();
-        for(int i = 0; i < x.length; i++) {
-            pointList.add(Point.of(x[i], z[i]));
+        List<Point> pointList = getPoints(coordinates);
+
+        List<List<Point>> holesList = new ArrayList<>();
+        for (PolygonCoordinate hole : holes) {
+            holesList.add(getPoints(hole));
         }
+
         Color color = new Color(territoryData.getColor().asRGB());
 
 
@@ -110,12 +112,22 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
                 hoverTooltip(infoWindowPopup).
                 build();
 
-        Marker marker = Marker.polygon(pointList).markerOptions(options);
+        Marker marker = Marker.polygon(pointList, holesList).markerOptions(options);
 
 
 
         TanKey key = new TanKey(Bukkit.getWorld(worldName));
         chunkLayerMap.get(key).addMarker(Key.of(polyid), marker);
+    }
+
+    private static @NotNull List<Point> getPoints(PolygonCoordinate coordinates) {
+        List<Point> pointList = new ArrayList<>();
+        double[] x = Arrays.stream(coordinates.getX()).asDoubleStream().toArray();
+        double[] z = Arrays.stream(coordinates.getZ()).asDoubleStream().toArray();
+        for(int i = 0; i < x.length; i++) {
+            pointList.add(Point.of(x[i], z[i]));
+        }
+        return pointList;
     }
 
     @Override

@@ -16,23 +16,11 @@ public class GenericHoleDetector {
 
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
-
-                System.out.println("Test : " + x + "," + y);
-                if(gridFlags.getFlag(x, y)){
-                    System.out.println("déjà claim");
-                }
-                if(visited.getFlag(x, y)){
-                    System.out.println("Déjà visité");
-                }
-
-
                 if (!gridFlags.getFlag(x, y) && !visited.getFlag(x, y)
                 ) {
-                    System.out.println("Es-ce que le hole est bon ? : " + x + ", " + y);
                     TileFlags hole = new TileFlags();
                     if (floodFill(hole, visited, x, y, minX, minY, maxX, maxY)) {
                         holes.add(hole);
-                        System.out.println("oui ! ");
                     }
                 }
             }
@@ -55,25 +43,19 @@ public class GenericHoleDetector {
 
             if (!gridFlags.getFlag(x, y)) {
                 hole.setFlag(x, y, true);
-
-                // Vérifier si le point est à la bordure d'un trou
-                boolean surroundedByFilled = true;
-                if (x <= minX || y <= minY || x >= maxX || y >= maxY ||
-                        !gridFlags.getFlag(x - 1, y) || !gridFlags.getFlag(x + 1, y) ||
-                        !gridFlags.getFlag(x, y - 1) || !gridFlags.getFlag(x, y + 1)) {
-                    surroundedByFilled = false;
-                }
-
-                // Si le trou n'est pas entouré de cellules remplies, il n'est pas valide
-                if (!surroundedByFilled) {
-                    isHole = false;
-                }
-
-                // Ajouter les voisins à la pile
                 if (x > minX) stack.push(new int[]{x - 1, y});
                 if (x < maxX) stack.push(new int[]{x + 1, y});
                 if (y > minY) stack.push(new int[]{x, y - 1});
                 if (y < maxY) stack.push(new int[]{x, y + 1});
+            }
+        }
+
+        // If the hole is touching the border of the area, it is not a hole.
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                if (hole.getFlag(x, y) && (x == minX || x == maxX || y == minY || y == maxY)) {
+                    return false;
+                }
             }
         }
 

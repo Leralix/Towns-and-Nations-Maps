@@ -100,18 +100,19 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
             return;
         }
 
-        int[] x = coordinates.getX();
-        int[] z = coordinates.getZ();
+
+        Shape shape = getVector(coordinates);
+
+        Collection<Shape> holesList = new ArrayList<>();
+        for (PolygonCoordinate hole : holes) {
+            holesList.add(getVector(hole));
+        }
+
 
         Color color = new Color(territoryData.getColor().asRGB());
         Color lineColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), 0.8f);
         Color fillColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f);
 
-        Collection<com.flowpowered.math.vector.Vector2d> pointList = new ArrayList<>();
-        for(int i = 0; i < x.length; i++){
-            pointList.add(new Vector2d(x[i],z[i]));
-        }
-        Shape shape = Shape.builder().addPoints(pointList).build();
 
         ShapeMarker shapeMarker = ShapeMarker.builder()
                 .shape(shape,70)
@@ -122,10 +123,22 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
                 .lineWidth(2)
                 .minDistance(10)
                 .depthTestEnabled(false)
+                .holes(holesList.toArray(Shape[]::new))
                 .build();
 
         this.chunkLayerMap.get(new TanKey(world)).getMarkers().put(polyid, shapeMarker);
 
+    }
+
+    private static Shape getVector(PolygonCoordinate coordinates) {
+        Collection<Vector2d> pointList = new ArrayList<>();
+        int[] x = coordinates.getX();
+        int[] z = coordinates.getZ();
+        for(int i = 0; i < x.length; i++){
+            pointList.add(new Vector2d(x[i],z[i]));
+        }
+
+        return Shape.builder().addPoints(pointList).build();
     }
 
     @Override
