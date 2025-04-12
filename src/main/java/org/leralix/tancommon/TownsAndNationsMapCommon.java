@@ -112,20 +112,19 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         updatePeriod = per * 20L;
 
         markerRegister.setup();
-        initialiseClaimedChunks();
-        initialiseLandmarks();
+        startTasks();
     }
 
-    private void initialiseClaimedChunks() {
+    private void startTasks() {
         updateChunks = new UpdateChunks(new ChunkManager(markerRegister), updatePeriod);
-        getServer().getScheduler().scheduleSyncDelayedTask(this, updateChunks, 40);
-    }
-
-    private void initialiseLandmarks() {
         updateLandMarks = new UpdateLandMarks(markerRegister, updatePeriod);
+
+        Runnable deleteAllRunnable = () -> markerRegister.deleteAllMarkers();
+
+        getServer().getScheduler().scheduleSyncDelayedTask(this, deleteAllRunnable, 40);
+        getServer().getScheduler().scheduleSyncDelayedTask(this, updateChunks, 40);
         getServer().getScheduler().scheduleSyncDelayedTask(this, updateLandMarks, 40);
     }
-
 
     @Override
     public void onDisable() {

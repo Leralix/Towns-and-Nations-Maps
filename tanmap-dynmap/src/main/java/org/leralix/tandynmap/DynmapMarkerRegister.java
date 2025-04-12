@@ -1,19 +1,18 @@
 package org.leralix.tandynmap;
 
+import org.bukkit.Chunk;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 import org.dynmap.DynmapAPI;
-import org.dynmap.markers.AreaMarker;
-import org.dynmap.markers.Marker;
-import org.dynmap.markers.MarkerAPI;
-import org.dynmap.markers.MarkerSet;
+import org.dynmap.markers.*;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.storage.PolygonCoordinate;
+import org.tan.api.interfaces.TanClaimedChunk;
 import org.tan.api.interfaces.TanLandmark;
 import org.tan.api.interfaces.TanTerritory;
 
-import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -67,20 +66,90 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
 
     @Override
     public void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, PolygonCoordinate coordinates, String infoWindowPopup, Collection<PolygonCoordinate> holes){
-       AreaMarker areaMarker = chunkMarkerSet.findAreaMarker(polyid);
-        if(areaMarker != null){
-            areaMarker.deleteMarker();
+
+        Color chunkColor = territoryData.getColor();
+
+        //Dynmap does not allow polygon with holes.
+        //To bypass this, polygon will only draw lines while each chunk will be drawn separately.
+
+        //Draw chunks
+        int i = 0;
+        for(TanClaimedChunk chunk : territoryData.getClaimedChunks())   {
+
+            String id = polyid + "_" + i;
+            AreaMarker areaMarker = chunkMarkerSet.findAreaMarker(id);
+            if(areaMarker != null){
+                areaMarker.deleteMarker();
+            }
+
+
+            double[] x = new double[4];
+            double[] z = new double[4];
+
+            x[0] = (double) chunk.getX() * 16;
+            x[1] = (double) chunk.getX() * 16;
+            x[2] = (double) (chunk.getX() + 1) * 16 + 0.01;
+            x[3] = (double) (chunk.getX() + 1) * 16 + 0.01;
+
+            z[0] = (double) chunk.getZ() * 16;
+            z[1] = (double) (chunk.getZ() + 1) * 16 + 0.01;
+            z[2] = (double) (chunk.getZ() + 1) * 16 + 0.01;
+            z[3] = (double) chunk.getZ() * 16;
+
+            areaMarker = chunkMarkerSet.createAreaMarker(
+                    id,
+                    territoryData.getName() + "_" + i,
+                    b,
+                    worldName,
+                    x,
+                    z,
+                    false);
+
+            areaMarker.setLineStyle(0, 0.6, chunkColor.asRGB());
+            areaMarker.setFillStyle(0.6, chunkColor.asRGB());
+            areaMarker.setDescription(infoWindowPopup);
+            i++;
         }
 
-        double[] x = Arrays.stream(coordinates.getX()).asDoubleStream().toArray();
-        double[] z = Arrays.stream(coordinates.getZ()).asDoubleStream().toArray();
 
 
-        areaMarker = chunkMarkerSet.createAreaMarker(polyid, territoryData.getName(), b, worldName, x, z, false);
-        Color chunkColor = territoryData.getColor();
-        areaMarker.setLineStyle(2, 9, chunkColor.asRGB());
-        areaMarker.setFillStyle(0.6, chunkColor.asRGB());
-        areaMarker.setDescription(infoWindowPopup);
+        //Draw lines
+        List<PolygonCoordinate> polygonLines = new ArrayList<>(holes);
+        polygonLines.add(coordinates);
+        i = 0;
+        for(PolygonCoordinate lines : polygonLines){
+
+            String id = polyid + "_l" + i;
+
+            PolyLineMarker polyLineMarker = chunkMarkerSet.findPolyLineMarker(id);
+            if(polyLineMarker != null){
+                polyLineMarker.deleteMarker();
+            }
+
+
+            double[] hx = loopCoordinates(lines.getX());
+            double[] hz = loopCoordinates(lines.getZ());
+            polyLineMarker = chunkMarkerSet.createPolyLineMarker(
+                    id,
+                territoryData.getName() + "_line_" + i,
+                true,
+                worldName,
+                hx,
+                hz,
+                hz,
+                false
+                );
+            polyLineMarker.setLineStyle(2, 9, chunkColor.asRGB());
+            i++;
+        }
+
+    }
+
+    private static double[] loopCoordinates(int[] coordinates) {
+        double[] x = Arrays.stream(coordinates).asDoubleStream().toArray();
+        double[] xLooped = Arrays.copyOf(x, x.length + 1);
+        xLooped[x.length] = x[0];
+        return xLooped;
     }
 
     @Override
