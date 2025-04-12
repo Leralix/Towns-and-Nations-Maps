@@ -140,7 +140,7 @@ public class ChunkManager {
 
         String polyid = territoryData.getID() + "_" + polyIndex;
 
-        PolygonCoordinate polygonCoordinate = createTerritoryPolygon(ourShape, minx, minz);
+        PolygonCoordinate polygonCoordinate = createPolygon(ourShape, minx, minz);
 
         Collection<PolygonCoordinate> holes = createTerritoryHoles(ourShape, polygonCoordinate);
 
@@ -161,28 +161,38 @@ public class ChunkManager {
         GenericHoleDetector genericHoleDetector = new GenericHoleDetector(ourShape);
         for(TileFlags tileFlags : genericHoleDetector.getHoles(minX, minZ, maxX, maxZ)){
 
-            int holeMinX = Integer.MAX_VALUE;
-            int holeMinZ = Integer.MAX_VALUE;
+            int holeStartX = -1;
+            int holeStartZ = -1;
+            boolean found = false;
 
-            for (int x = minX; x <= maxX; x++) {
-                for (int z = minZ; z <= maxZ; z++) {
+            for (int x = minX; x <= maxX && !found; x++) {
+                for (int z = minZ; z <= maxZ && !found; z++) {
                     if (tileFlags.getFlag(x, z)) {
-                        holeMinX = Math.min(holeMinX, x);
-                        holeMinZ = Math.min(holeMinZ, z);
+                        if (!tileFlags.getFlag(x + 1, z) || !tileFlags.getFlag(x - 1, z)
+                                || !tileFlags.getFlag(x, z + 1) || !tileFlags.getFlag(x, z - 1)) {
+                            holeStartX = x;
+                            holeStartZ = z;
+                            found = true;
+                        }
                     }
                 }
             }
 
-            holes.add(createTerritoryPolygon(tileFlags, holeMinX, holeMinZ));
+            if (!found) {
+                continue;
+            }
+            holes.add(createPolygon(tileFlags, holeStartX, holeStartZ));
         }
 
         return holes;
 
     }
 
-    private PolygonCoordinate createTerritoryPolygon(TileFlags ourShape, int minx, int minz) {
+    private PolygonCoordinate createPolygon(TileFlags ourShape, int minx, int minz) {
         int[] x;
         int[] z;
+
+
         /* Trace outline of blocks - start from minx, minz going to x+ */
         int init_x = minx;
         int init_z = minz;
@@ -191,7 +201,9 @@ public class ChunkManager {
         direction dir = direction.XPLUS;
         ArrayList<int[]> linelist = new ArrayList<>();
         linelist.add(new int[] { init_x, init_z } ); // Add start point
-        while((cur_x != init_x) || (cur_z != init_z) || (dir != direction.ZMINUS)) {
+        int nbIters = 0;
+        while(((cur_x != init_x) || (cur_z != init_z) || (dir != direction.ZMINUS)) && nbIters < 500) {
+            nbIters++;
             switch(dir) {
                 case XPLUS: /* Segment in X+ direction */
                     if(!ourShape.getFlag(cur_x+1, cur_z)) { /* Right turn? */
