@@ -14,7 +14,7 @@ subprojects {
         from rootProject.sourceSets.main.output
     }
 
-    def targetJavaVersion = 21
+    def targetJavaVersion = project.name == "tanmap-bluemap" ? 21 : 17
     java {
         def javaVersion = JavaVersion.toVersion(targetJavaVersion)
         sourceCompatibility = targetJavaVersion
