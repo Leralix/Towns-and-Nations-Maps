@@ -1,5 +1,4 @@
-rootProject.name = 'TownsAndNationsMaps'
-include 'tanmap-squaremap'
-include 'tanmap-dynmap'
-include 'tanmap-bluemap'
-
+rootProject.name = 'TownsAndNations-Maps'
+include 'TownsAndNations-squaremap'
+include 'TownsAndNations-dynmap'
+include 'TownsAndNations-bluemap'

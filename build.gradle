@@ -2,6 +2,15 @@ plugins {
     id 'java'
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    if (JavaVersion.current() < JavaVersion.VERSION_17) {
+        toolchain.languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 subprojects {
     apply plugin: 'java'
 
@@ -14,7 +23,7 @@ subprojects {
         from rootProject.sourceSets.main.output
     }
 
-    def targetJavaVersion = project.name == "tanmap-bluemap" ? 21 : 17
+    def targetJavaVersion = project.name == "TownsAndNations-bluemap" ? 21 : 17
     java {
         def javaVersion = JavaVersion.toVersion(targetJavaVersion)
         sourceCompatibility = targetJavaVersion
