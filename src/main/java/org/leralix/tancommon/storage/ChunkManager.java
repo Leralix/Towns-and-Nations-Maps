@@ -194,15 +194,13 @@ public class ChunkManager {
 
 
         /* Trace outline of blocks - start from minx, minz going to x+ */
-        int init_x = minx;
-        int init_z = minz;
         int cur_x = minx;
         int cur_z = minz;
         direction dir = direction.XPLUS;
         ArrayList<int[]> linelist = new ArrayList<>();
-        linelist.add(new int[] { init_x, init_z } ); // Add start point
+        linelist.add(new int[] {minx, minz} ); // Add start point
         int nbIters = 0;
-        while(((cur_x != init_x) || (cur_z != init_z) || (dir != direction.ZMINUS)) && nbIters < 500) {
+        while(((cur_x != minx) || (cur_z != minz) || (dir != direction.ZMINUS)) && nbIters < 10000) {
             nbIters++;
             switch(dir) {
                 case XPLUS: /* Segment in X+ direction */
