@@ -2,6 +2,8 @@ package org.leralix.tancommon.storage;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.leralix.lib.utils.config.ConfigTag;
+import org.leralix.lib.utils.config.ConfigUtil;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.tan.api.interfaces.TanClaimedChunk;
 import org.tan.api.interfaces.TanRegion;
@@ -200,7 +202,8 @@ public class ChunkManager {
         ArrayList<int[]> linelist = new ArrayList<>();
         linelist.add(new int[] {minx, minz} ); // Add start point
         int nbIters = 0;
-        while(((cur_x != minx) || (cur_z != minz) || (dir != direction.ZMINUS)) && nbIters < 10000) {
+        int nbMaxIters = ConfigUtil.getCustomConfig(ConfigTag.MAIN).getInt("polygon_max_points", 100000);
+        while(((cur_x != minx) || (cur_z != minz) || (dir != direction.ZMINUS)) && nbIters < nbMaxIters) {
             nbIters++;
             switch(dir) {
                 case XPLUS: /* Segment in X+ direction */

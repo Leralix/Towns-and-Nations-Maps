@@ -1,10 +1,14 @@
 # Common configuration options
-#
+# To update the config please restart the server.
+
 update:
   # Seconds between checks for map update
   period: 300
 
-
+#Set the maximum number of points to be used for polygons
+#If the polygon is too large, a straight line will close it to the first point.
+#If increasing this value does not help, please contact us on discord.
+polygon_max_points: 100000
 
 
 # Territory Layer (Towns, Regions and Nations)
@@ -61,7 +65,3 @@ town_infowindow: '<div class="infowindow"><span style="font-size:140%;font-weigh
 region_infowindow: '<div class="infowindow"> <span style="font-size:140%;font-weight:bold;">%REGION_NAME%</span>  <span style="font-size:80%">Created %DAYS_SINCE_CREATION% day(s) ago</span><br><br><span style="font-size:100%;font-style:italic;">%DESCRIPTION%</span><br><hr><span style="font-size:100%;"><b>Claims</b> %NUMBER_CLAIMS% <b>|</b> <b>Number of towns</b> %NUMBER_OF_TOWNS% </span><hr><br><span style="font-weight:bold;">Capital</span><br>%REGION_CAPITAL%<br><br><span style="font-weight:bold;">Towns</span><br>%TOWN_LIST%<br></div>'
 
 landmark_infowindow: '<div class="infowindow"><span style="font-size:140%;font-weight:bold;">Landmark</span><span style="font-size:100%;font-style:italic;"><br><hr><span style="font-size:100%;"><b>Owner</b></span><br>%OWNER%</div><b>Producing<br></b> %QUANTITY%x %ITEM%</span>'
-
-
-#Config version
-config-version: 3
