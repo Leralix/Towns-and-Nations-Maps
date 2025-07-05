@@ -40,6 +40,9 @@ public class ChunkManager {
         //Registering all the claimed chunks to draw
         for (TanClaimedChunk townClaimedChunk : townClaimedChunks) {
             World world = Bukkit.getWorld(townClaimedChunk.getWorldUUID());
+            if(world == null){
+                continue;
+            }
             if (world != currentWorld) {
                 String worldName = world.getName();
                 currentShape = worldNameShapeMap.get(worldName);
