@@ -14,11 +14,11 @@ import org.bukkit.World;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.leralix.tancommon.storage.TanKey;
+import org.tan.api.interfaces.TanFort;
 import org.tan.api.interfaces.TanLandmark;
 import org.tan.api.interfaces.TanTerritory;
 
 import java.util.*;
-import java.util.List;
 
 public class BluemapMarkerRegister extends CommonMarkerRegister {
 
@@ -26,12 +26,14 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
 
     private final Map<TanKey, MarkerSet> chunkLayerMap;
     private final Map<TanKey, MarkerSet> landmarkLayerMap;
+    private final Map<TanKey, MarkerSet> fortLayerMap;
 
     public BluemapMarkerRegister() {
         super();
         BlueMapAPI.onEnable(bluemapApi -> this.api = bluemapApi);
         this.chunkLayerMap = new HashMap<>();
         this.landmarkLayerMap = new HashMap<>();
+        this.fortLayerMap = new HashMap<>();
     }
     @Override
     protected void setupLandmarkLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
@@ -41,6 +43,11 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
     @Override
     protected void setupChunkLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
         setupLayer(id, name, chunkLayerPriority, hideByDefault, worldsName, chunkLayerMap);
+    }
+
+    @Override
+    protected void setupFortLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
+        setupLayer(id, name, chunkLayerPriority, hideByDefault, worldsName, fortLayerMap);
     }
 
     private void setupLayer(String id, String name, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName, Map<TanKey, MarkerSet> layerMap) {
@@ -90,6 +97,19 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
                 .build();
 
         this.landmarkLayerMap.get(new TanKey(world)).getMarkers().put(landmark.getID(),marker);
+    }
+
+    @Override
+    public void registerNewFort(TanFort fort) {
+        Location location = fort.getFlagPosition().getLocation();
+        World world = location.getWorld();
+        POIMarker marker = POIMarker.builder()
+                .label(fort.getName())
+                .detail(generateDescription(fort))
+                .position(location.getX(), location.getY(), location.getZ())
+                .maxDistance(2000)
+                .build();
+        this.fortLayerMap.get(new TanKey(world)).getMarkers().put(fort.getID(), marker);
     }
 
     @Override
@@ -149,6 +169,11 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
             }
         }
         for(MarkerSet marker : landmarkLayerMap.values()){
+            for(String id : marker.getMarkers().keySet()){
+                marker.remove(id);
+            }
+        }
+        for(MarkerSet marker : fortLayerMap.values()){
             for(String id : marker.getMarkers().keySet()){
                 marker.remove(id);
             }

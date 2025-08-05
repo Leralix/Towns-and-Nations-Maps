@@ -12,6 +12,7 @@ import org.leralix.tancommon.commands.PlayerCommandManager;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.storage.ChunkManager;
 import org.leralix.tancommon.update.UpdateChunks;
+import org.leralix.tancommon.update.UpdateForts;
 import org.leralix.tancommon.update.UpdateLandMarks;
 import org.tan.api.TanAPI;
 
@@ -32,6 +33,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
 
     private UpdateLandMarks updateLandMarks;
     private UpdateChunks updateChunks;
+    private UpdateForts updateForts;
 
     private final String subMapName = "[TaN - " + getSubMapName() + "] - ";
 
@@ -118,12 +120,14 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
     private void startTasks() {
         updateChunks = new UpdateChunks(new ChunkManager(markerRegister), updatePeriod);
         updateLandMarks = new UpdateLandMarks(markerRegister, updatePeriod);
+        updateForts = new UpdateForts(markerRegister, updatePeriod);
 
         Runnable deleteAllRunnable = () -> markerRegister.deleteAllMarkers();
 
         getServer().getScheduler().scheduleSyncDelayedTask(this, deleteAllRunnable, 40);
         getServer().getScheduler().scheduleSyncDelayedTask(this, updateChunks, 40);
         getServer().getScheduler().scheduleSyncDelayedTask(this, updateLandMarks, 40);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, updateForts, 40, updatePeriod);
     }
 
     @Override

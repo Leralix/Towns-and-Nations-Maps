@@ -26,6 +26,7 @@ public class TownsAndNationsSquaremap extends TownsAndNationsMapCommon {
 
         registerIcon(IconType.LANDMARK_CLAIMED);
         registerIcon(IconType.LANDMARK_UNCLAIMED);
+        registerIcon(IconType.FORT);
     }
 
     private void registerIcon(IconType iconType) {

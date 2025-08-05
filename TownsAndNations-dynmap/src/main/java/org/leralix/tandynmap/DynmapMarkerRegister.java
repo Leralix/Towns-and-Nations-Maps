@@ -1,6 +1,5 @@
 package org.leralix.tandynmap;
 
-import org.bukkit.Chunk;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
@@ -9,6 +8,7 @@ import org.dynmap.markers.*;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.tan.api.interfaces.TanClaimedChunk;
+import org.tan.api.interfaces.TanFort;
 import org.tan.api.interfaces.TanLandmark;
 import org.tan.api.interfaces.TanTerritory;
 
@@ -23,6 +23,7 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
     private final MarkerAPI dynmapLayerAPI;
     private MarkerSet landmarkMarkerSet;
     private MarkerSet chunkMarkerSet;
+    private MarkerSet fortMarkerSet;
 
 
     public DynmapMarkerRegister(){
@@ -47,6 +48,11 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
     }
 
     @Override
+    protected void setupFortLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
+        fortMarkerSet = dynmapLayerAPI.createMarkerSet("forts", name, null, false);
+    }
+
+    @Override
     public boolean isWorking() {
         return this.dynmapLayerAPI != null;
     }
@@ -62,6 +68,18 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
         Location location = landmark.getLocation();
         marker = landmarkMarkerSet.createMarker(landmark.getID(), landmark.getName(), location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), dynmapLayerAPI.getMarkerIcon("diamond"), true);
         marker.setDescription(generateDescription(landmark));
+    }
+
+    @Override
+    public void registerNewFort(TanFort fort) {
+        Marker marker = fortMarkerSet.findMarker(fort.getID());
+        if (marker != null) {
+            marker.deleteMarker();
+        }
+
+        Location location = fort.getFlagPosition().getLocation();
+        marker = fortMarkerSet.createMarker(fort.getID(), fort.getName(), location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), dynmapLayerAPI.getMarkerIcon("diamond"), true);
+        marker.setDescription(generateDescription(fort));
     }
 
     @Override
@@ -154,11 +172,14 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
 
     @Override
     public void deleteAllMarkers() {
-        for(AreaMarker areaMarker : landmarkMarkerSet.getAreaMarkers()){
+        for(AreaMarker areaMarker : chunkMarkerSet.getAreaMarkers()){
             areaMarker.deleteMarker();
         }
         for(Marker marker : landmarkMarkerSet.getMarkers()){
             marker.deleteMarker();
+        }
+        for(AreaMarker areaMarker : fortMarkerSet.getAreaMarkers()){
+            areaMarker.deleteMarker();
         }
     }
 }

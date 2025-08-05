@@ -4,6 +4,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.storage.PolygonCoordinate;
+import org.tan.api.interfaces.TanFort;
 import org.tan.api.interfaces.TanLandmark;
 import org.tan.api.interfaces.TanTerritory;
 
@@ -34,14 +35,27 @@ public abstract class CommonMarkerRegister {
         boolean hideByDefault2 = cfg.getBoolean("chunk_layer.hide_by_default", false);
         List<String> worldsName2 = cfg.getStringList("chunk_layer.worlds");
         setupChunkLayer(id2, name2, minZoom2, chunkLayerPriority2, hideByDefault2, worldsName2);
+
+        String id3 = "townsandnations.forts";
+        String name3 = cfg.getString("chunk_layer.name", "Towns and Nations");
+        int minZoom3 = Math.max(cfg.getInt("chunk_layer.minimum_zoom", 0),0);
+        int chunkLayerPriority3 =  Math.max(cfg.getInt("chunk_layer.priority", 10),0);
+        boolean hideByDefault3 = cfg.getBoolean("chunk_layer.hide_by_default", false);
+        List<String> worldsName3 = cfg.getStringList("chunk_layer.worlds");
+        setupFortLayer(id3, name3, minZoom3, chunkLayerPriority3, hideByDefault3, worldsName3);
+
     }
 
     protected abstract void setupLandmarkLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName);
     protected abstract void setupChunkLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName);
+    protected abstract void setupFortLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName);
+
 
     public abstract boolean isWorking();
 
     public abstract void registerNewLandmark(TanLandmark landmark);
+
+    public abstract void registerNewFort(TanFort fort);
 
     public abstract void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, PolygonCoordinate coordinates, String infoWindowPopup, Collection<PolygonCoordinate> holes);
 
@@ -64,5 +78,18 @@ public abstract class CommonMarkerRegister {
 
         return res;
     }
+
+    protected String generateDescription(TanFort fort) {
+
+        String res = TownsAndNationsMapCommon.getPlugin().getConfig().getString("fort_infowindow");
+        if(res == null)
+            return "No description";
+
+        res = res.replace("%NAME%", fort.getName());
+
+        return res;
+    }
+
     public abstract void deleteAllMarkers();
+
 }

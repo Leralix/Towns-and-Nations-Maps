@@ -1,12 +1,14 @@
 package org.leralix.tansquaremap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
 import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.leralix.tancommon.storage.TanKey;
+import org.tan.api.interfaces.TanFort;
 import org.tan.api.interfaces.TanLandmark;
 import org.tan.api.interfaces.TanTerritory;
 import xyz.jpenilla.squaremap.api.*;
@@ -22,11 +24,14 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
     private final Squaremap api;
     private final Map<TanKey, SimpleLayerProvider> chunkLayerMap;
     private final Map<TanKey, SimpleLayerProvider> landmarkLayerMap;
+    private final Map<TanKey, SimpleLayerProvider> fortLayerMap;
+
 
     public SquaremapMarkerRegister() {
         this.api = SquaremapProvider.get();
         this.chunkLayerMap = new HashMap<>();
         this.landmarkLayerMap = new HashMap<>();
+        this.fortLayerMap = new HashMap<>();
     }
 
     @Override
@@ -37,6 +42,12 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
     protected void setupChunkLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
         setupLayer(id, name, chunkLayerPriority, hideByDefault, worldsName, chunkLayerMap);
     }
+
+    @Override
+    protected void setupFortLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
+        setupLayer(id, name, chunkLayerPriority, hideByDefault, worldsName, fortLayerMap);
+    }
+
     private void setupLayer(String id, String name, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName, Map<TanKey, SimpleLayerProvider> landmarkLayerMap) {
         List<World> worlds = new ArrayList<>();
         if(worldsName.contains("all") || worldsName.isEmpty()) {
@@ -90,6 +101,23 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
     }
 
     @Override
+    public void registerNewFort(TanFort fort) {
+        Location location = fort.getFlagPosition().getLocation();
+        Point point = Point.of(location.getX(), location.getZ());
+
+        MarkerOptions markerOptions = MarkerOptions.builder().
+                hoverTooltip(generateDescription(fort)).
+                build();
+
+        String imageKey = IconType.FORT.getFileName();
+
+        Marker marker = Marker.icon(point, Key.of(imageKey),16).markerOptions(markerOptions);
+
+        TanKey key = new TanKey(location.getWorld());
+        landmarkLayerMap.get(key).addMarker(Key.of(fort.getID()), marker);
+    }
+
+    @Override
     public void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, PolygonCoordinate coordinates, String infoWindowPopup, Collection<PolygonCoordinate> holes){
 
 
@@ -137,6 +165,10 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
         }
 
         for(SimpleLayerProvider layerProvider : landmarkLayerMap.values()) {
+            layerProvider.clearMarkers();
+        }
+
+        for(SimpleLayerProvider layerProvider : fortLayerMap.values()) {
             layerProvider.clearMarkers();
         }
     }

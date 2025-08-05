@@ -50,7 +50,7 @@ subprojects {
 
 allprojects {
     group = 'org.leralix'
-    version = '0.12.1'
+    version = '0.13.0'
 
     repositories {
         mavenCentral()
@@ -68,7 +68,7 @@ allprojects {
     dependencies {
         compileOnly "org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT"
         compileOnly "io.github.leralix:sphere-lib:0.4.3"
-        compileOnly "io.github.leralix:tan-api:0.2.1"
+        compileOnly "io.github.leralix:tan-api:0.5.0"
     }
 
     test {
