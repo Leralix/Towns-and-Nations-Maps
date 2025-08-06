@@ -1,4 +1,4 @@
-name: tanmap-dynmap
+name: TownsAndNations-dynmap
 version: '${version}'
 main: org.leralix.tandynmap.TownsAndNationsDynmap
 api-version: '1.19'

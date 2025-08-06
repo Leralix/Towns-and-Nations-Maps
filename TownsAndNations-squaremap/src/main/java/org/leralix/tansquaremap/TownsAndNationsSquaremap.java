@@ -20,9 +20,12 @@ public class TownsAndNationsSquaremap extends TownsAndNationsMapCommon {
             iconsDir.mkdirs();
         }
 
-        TownsAndNationsSquaremap.getPlugin().saveResource("icons/LandmarkClaimed.png", true);
-        TownsAndNationsSquaremap.getPlugin().saveResource("icons/LandmarkFree.png", true);
-
+        for(IconType iconType : IconType.values()) {
+            File iconFile = new File(iconsDir, iconType.getFileName());
+            if (!iconFile.exists()) {
+                TownsAndNationsSquaremap.getPlugin().saveResource("icons/" + iconType.getFileName(), true);
+            }
+        }
 
         registerIcon(IconType.LANDMARK_CLAIMED);
         registerIcon(IconType.LANDMARK_UNCLAIMED);
@@ -53,7 +56,6 @@ public class TownsAndNationsSquaremap extends TownsAndNationsMapCommon {
 
     @Override
     protected CommonMarkerRegister createMarkerRegister() {
-        registerIcons();
         return new SquaremapMarkerRegister();
     }
 }

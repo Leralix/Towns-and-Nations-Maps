@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
+import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
 import org.leralix.tancommon.storage.PolygonCoordinate;
@@ -16,7 +17,11 @@ import xyz.jpenilla.squaremap.api.Point;
 import xyz.jpenilla.squaremap.api.marker.Marker;
 import xyz.jpenilla.squaremap.api.marker.MarkerOptions;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -171,5 +176,21 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
         for(SimpleLayerProvider layerProvider : fortLayerMap.values()) {
             layerProvider.clearMarkers();
         }
+    }
+
+    @Override
+    public void registerIcon(IconType iconType) {
+
+        try {
+            File file = new File(TownsAndNationsMapCommon.getPlugin().getDataFolder(), "icons/" + iconType.getFileName());
+            BufferedImage image = ImageIO.read(file);
+            Registry<BufferedImage> registry = SquaremapProvider.get().iconRegistry();
+            if(registry.hasEntry(Key.of(iconType.getFileName())))
+                registry.unregister(Key.of(iconType.getFileName()));
+            registry.register(Key.of(iconType.getFileName()),image);
+        } catch (IOException e) {
+            throw new RuntimeException("Erreur lors du chargement de landmark.png", e);
+        }
+
     }
 }

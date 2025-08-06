@@ -6,6 +6,7 @@ import org.bukkit.plugin.Plugin;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.*;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
+import org.leralix.tancommon.markers.IconType;
 import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.tan.api.interfaces.TanClaimedChunk;
 import org.tan.api.interfaces.TanFort;
@@ -181,5 +182,10 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
         for(AreaMarker areaMarker : fortMarkerSet.getAreaMarkers()){
             areaMarker.deleteMarker();
         }
+    }
+
+    @Override
+    public void registerIcon(IconType iconType) {
+        // TODO Implement icon registration for Dynmap
     }
 }

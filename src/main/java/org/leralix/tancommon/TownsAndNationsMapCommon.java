@@ -10,12 +10,14 @@ import org.leralix.lib.data.PluginVersion;
 import org.leralix.tancommon.bstat.Metrics;
 import org.leralix.tancommon.commands.PlayerCommandManager;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
+import org.leralix.tancommon.markers.IconType;
 import org.leralix.tancommon.storage.ChunkManager;
 import org.leralix.tancommon.update.UpdateChunks;
 import org.leralix.tancommon.update.UpdateForts;
 import org.leralix.tancommon.update.UpdateLandMarks;
 import org.tan.api.TanAPI;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Objects;
@@ -93,7 +95,9 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
     }
 
     private void initialise() {
+
         markerRegister = createMarkerRegister();
+        registerIcons(markerRegister);
 
         if(!markerRegister.isWorking()){
             logger.severe(subMapName +  "Cannot find marker API, retrying in 5 seconds");
@@ -115,6 +119,21 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
 
         markerRegister.setup();
         startTasks();
+    }
+
+    private void registerIcons(CommonMarkerRegister markerRegister) {
+        File iconsDir = new File(getDataFolder(), "icons");
+        if (!iconsDir.exists()) {
+            iconsDir.mkdirs();
+        }
+
+        for(IconType iconType : IconType.values()) {
+            File iconFile = new File(iconsDir, iconType.getFileName());
+            if (!iconFile.exists()) {
+                getPlugin().saveResource("icons/" + iconType.getFileName(), true);
+            }
+            markerRegister.registerIcon(iconType);
+        }
     }
 
     private void startTasks() {

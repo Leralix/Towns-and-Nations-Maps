@@ -11,16 +11,24 @@ import de.bluecolored.bluemap.api.math.Shape;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
+import org.leralix.tancommon.markers.IconType;
 import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.leralix.tancommon.storage.TanKey;
 import org.tan.api.interfaces.TanFort;
 import org.tan.api.interfaces.TanLandmark;
 import org.tan.api.interfaces.TanTerritory;
 
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 public class BluemapMarkerRegister extends CommonMarkerRegister {
+
+    private static final String PATH = "assets/TownsAndNations/";
 
     private BlueMapAPI api;
 
@@ -89,8 +97,14 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
     public void registerNewLandmark(TanLandmark landmark) {
         Location location = landmark.getLocation();
         World world = location.getWorld();
+
+        String iconFileName = PATH + (landmark.isOwned() ?
+                IconType.LANDMARK_CLAIMED.getFileName() :
+                IconType.LANDMARK_UNCLAIMED.getFileName());
+
         POIMarker marker = POIMarker.builder()
                 .label(landmark.getName())
+                .icon(iconFileName, 16, 16)
                 .detail(generateDescription(landmark))
                 .position(location.getX(), location.getY(), location.getZ())
                 .maxDistance(2000)
@@ -103,8 +117,12 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
     public void registerNewFort(TanFort fort) {
         Location location = fort.getFlagPosition().getLocation();
         World world = location.getWorld();
+
+        String iconFileName = PATH + IconType.FORT.getFileName();
+
         POIMarker marker = POIMarker.builder()
                 .label(fort.getName())
+                .icon(iconFileName,16, 16)
                 .detail(generateDescription(fort))
                 .position(location.getX(), location.getY(), location.getZ())
                 .maxDistance(2000)
@@ -179,5 +197,29 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
             }
         }
 
+    }
+
+    @Override
+    public void registerIcon(IconType iconType) {
+        File serverRoot = Bukkit.getServer().getWorldContainer(); // racine du serveur
+        File folder = new File(serverRoot, "bluemap/web/" + PATH);
+
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+
+        File destination = new File(folder, iconType.getFileName());
+
+        try (InputStream in = TownsAndNationsMapCommon.getPlugin().getResource("icons/" + iconType.getFileName())) {
+            if (in == null) {
+                throw new RuntimeException("Resource not found: " + iconType.getFileName());
+            }
+            Files.createDirectories(destination.getParentFile().toPath()); // Crée les dossiers si besoin
+            Files.copy(in, destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("Icon registered: " + iconType.getFileName());
+            System.out.println("Icon path: " + destination.getAbsolutePath());
+        } catch (Exception e) {
+            throw new RuntimeException("Error while loading icon: " + iconType.getFileName(), e);
+        }
     }
 }

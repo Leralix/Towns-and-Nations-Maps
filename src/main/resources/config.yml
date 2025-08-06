@@ -32,7 +32,25 @@ chunk_layer:
 #Landmarks layer
 landmark_layer:
   # Name of the layer
-  name: "Towns and Nations - landmarks"
+  name: "Towns and Nations - Landmarks"
+  # List of worlds to show on the map
+  # use "all" to show all worlds
+  worlds:
+    #  - "world"
+    #  - "world_nether"
+    #  - "world_the_end"
+    - "all"
+  # Make the layer hidden by default
+  hide_by_default: false
+  # ordering priority in layer menu (low goes before high - default is 0)
+  priority: 1
+  # (optional) set minimum zoom level before layer is visible (0 = default, always visible)
+  minimum_zoom: 0
+
+#Landmarks layer
+fort_layer:
+  # Name of the layer
+  name: "Towns and Nations - Forts"
   # List of worlds to show on the map
   # use "all" to show all worlds
   worlds:

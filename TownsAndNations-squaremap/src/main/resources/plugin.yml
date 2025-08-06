@@ -1,4 +1,4 @@
-name: tanmap-squaremap
+name: TownsAndNations-squaremap
 version: '${version}'
 main: org.leralix.tansquaremap.TownsAndNationsSquaremap
 api-version: '1.19'

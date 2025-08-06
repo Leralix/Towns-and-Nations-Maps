@@ -92,4 +92,5 @@ public abstract class CommonMarkerRegister {
 
     public abstract void deleteAllMarkers();
 
+    public abstract void registerIcon(IconType iconType);
 }
