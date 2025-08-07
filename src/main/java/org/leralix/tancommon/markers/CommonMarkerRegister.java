@@ -85,8 +85,9 @@ public abstract class CommonMarkerRegister {
         if(res == null)
             return "No description";
 
-        res = res.replace("%NAME%", fort.getName());
-
+        res = res.replace("%FORT_NAME%", fort.getName());
+        res = res.replace("%OWNER%", fort.getOwner().getName());
+        res = res.replace("%OCCUPIER%", fort.getOccupier() != null ? fort.getOccupier().getName() : "No occupier");
         return res;
     }
 

@@ -79,7 +79,22 @@ fort_layer:
 #%TOWN_LIST% - List of towns in the region
 #%REGION_CAPITAL% - Capital of the region
 
-town_infowindow: '<div class="infowindow"><span style="font-size:140%;font-weight:bold;">%TOWN_NAME%</span>  <span style="font-size:80%">Created %DAYS_SINCE_CREATION% day(s) ago</span><br><br><span style="font-size:100%;font-style:italic;">%DESCRIPTION%</span><br><hr><span style="font-size:100%;"><b>Claims</b> %NUMBER_CLAIMS% <b>|</b> <b>Level</b> %TOWN_LEVEL% </span><hr><br><span style="font-weight:bold;">Region:</span><br>%REGION_NAME%<br><br><span style="font-weight:bold;">Leader</span><br>%TOWN_LEADER%<br><br><span style="font-weight:bold;">Members</span><br>%MEMBERS_LIST%<br></div>'
-region_infowindow: '<div class="infowindow"> <span style="font-size:140%;font-weight:bold;">%REGION_NAME%</span>  <span style="font-size:80%">Created %DAYS_SINCE_CREATION% day(s) ago</span><br><br><span style="font-size:100%;font-style:italic;">%DESCRIPTION%</span><br><hr><span style="font-size:100%;"><b>Claims</b> %NUMBER_CLAIMS% <b>|</b> <b>Number of towns</b> %NUMBER_OF_TOWNS% </span><hr><br><span style="font-weight:bold;">Capital</span><br>%REGION_CAPITAL%<br><br><span style="font-weight:bold;">Towns</span><br>%TOWN_LIST%<br></div>'
+town_infowindow: "<div style=\"white-space: nowrap\"><div class=\"infowindow\"><span style=\"font-size:140%;font-weight:bold;\">%TOWN_NAME%</span>  <span style=\"font-size:80%\">Created %DAYS_SINCE_CREATION% day(s) ago</span><br><br><span style=\"font-size:100%;font-style:italic;\">%DESCRIPTION%</span><br><hr><span style=\"font-size:100%;\"><b>Claims</b> %NUMBER_CLAIMS% <b>|</b> <b>Level</b> %TOWN_LEVEL% </span><hr><br><span style=\"font-weight:bold;\">Region:</span><br>%REGION_NAME%<br><br><span style=\"font-weight:bold;\">Leader</span><br>%TOWN_LEADER%<br><br><span style=\"font-weight:bold;\">Members</span><br>%MEMBERS_LIST%<br></div></div>"
+region_infowindow: "<div style=\"white-space: nowrap\"><div class=\"infowindow\"> <span style=\"font-size:140%;font-weight:bold;\">%REGION_NAME%</span>  <span style=\"font-size:80%\">Created %DAYS_SINCE_CREATION% day(s) ago</span><br><br><span style=\"font-size:100%;font-style:italic;\">%DESCRIPTION%</span><br><hr><span style=\"font-size:100%;\"><b>Claims</b> %NUMBER_CLAIMS% <b>|</b> <b>Number of towns</b> %NUMBER_OF_TOWNS% </span><hr><br><span style=\"font-weight:bold;\">Capital</span><br>%REGION_CAPITAL%<br><br><span style=\"font-weight:bold;\">Towns</span><br>%TOWN_LIST%<br></div></div>"
 
-landmark_infowindow: '<div class="infowindow"><span style="font-size:140%;font-weight:bold;">Landmark</span><span style="font-size:100%;font-style:italic;"><br><hr><span style="font-size:100%;"><b>Owner</b></span><br>%OWNER%</div><b>Producing<br></b> %QUANTITY%x %ITEM%</span>'
+landmark_infowindow: "<div style=\"white-space: nowrap\"><div class=\"infowindow\"><span style=\"font-size:140%;font-weight:bold;\">Landmark</span><span style=\"font-size:100%;font-style:italic;\"><br><hr><span style=\"font-size:100%;\"><b>Owner</b></span><br>%OWNER%</div><b>Producing<br></b> %QUANTITY%x %ITEM%</span></div>"
+
+#%FORT_NAME% - Name of the fort.
+#%OWNER% - Owner of the landmark.
+#%OCCUPIER% - Occupier of the fort.
+fort_infowindow:
+  '<div style="white-space: nowrap; display: inline-block;">
+    <div class="infowindow" style="display: inline-block;">
+      <span style="font-size:140%; font-weight:bold;">%FORT_NAME%</span>
+      <br><hr>
+      <span style="margin-left: 10px; font-size:100%;">
+        <b>Owner:</b>%OWNER% <b>|</b> <b>Occupied by:</b> %OCCUPIER%
+      </span>
+    </div>
+  </div>'
+
