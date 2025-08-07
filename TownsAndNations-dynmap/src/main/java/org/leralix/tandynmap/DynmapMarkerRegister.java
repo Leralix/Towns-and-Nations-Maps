@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.*;
+import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
 import org.leralix.tancommon.storage.PolygonCoordinate;
@@ -34,7 +35,6 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
         }else{
             this.dynmapLayerAPI = null;
         }
-
     }
 
     @Override
@@ -67,7 +67,17 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
         }
 
         Location location = landmark.getLocation();
-        marker = landmarkMarkerSet.createMarker(landmark.getID(), landmark.getName(), location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), dynmapLayerAPI.getMarkerIcon("diamond"), true);
+        marker = landmarkMarkerSet.createMarker(
+                landmark.getID(),
+                landmark.getName(),
+                location.getWorld().getName(),
+                location.getX(),
+                location.getY(),
+                location.getZ(),
+                landmark.isOwned() ?
+                        dynmapLayerAPI.getMarkerIcon(IconType.LANDMARK_CLAIMED.getFileName()) :
+                        dynmapLayerAPI.getMarkerIcon(IconType.LANDMARK_UNCLAIMED.getFileName()),
+                true);
         marker.setDescription(generateDescription(landmark));
     }
 
@@ -79,7 +89,14 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
         }
 
         Location location = fort.getFlagPosition().getLocation();
-        marker = fortMarkerSet.createMarker(fort.getID(), fort.getName(), location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), dynmapLayerAPI.getMarkerIcon("diamond"), true);
+        marker = fortMarkerSet.createMarker(
+                fort.getID(),
+                fort.getName(),
+                location.getWorld().getName(),
+                location.getX(),
+                location.getY(),
+                location.getZ(),
+                dynmapLayerAPI.getMarkerIcon(IconType.FORT.getFileName()), true);
         marker.setDescription(generateDescription(fort));
     }
 
@@ -186,6 +203,8 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
 
     @Override
     public void registerIcon(IconType iconType) {
-        // TODO Implement icon registration for Dynmap
+        dynmapLayerAPI.createMarkerIcon(iconType.getFileName(), iconType.getFileName(),
+                TownsAndNationsMapCommon.getPlugin().getResource("icons/" + iconType.getFileName()));
+
     }
 }

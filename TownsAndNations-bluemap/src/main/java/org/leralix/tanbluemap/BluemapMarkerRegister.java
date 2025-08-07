@@ -216,8 +216,6 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
             }
             Files.createDirectories(destination.getParentFile().toPath()); // Crée les dossiers si besoin
             Files.copy(in, destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("Icon registered: " + iconType.getFileName());
-            System.out.println("Icon path: " + destination.getAbsolutePath());
         } catch (Exception e) {
             throw new RuntimeException("Error while loading icon: " + iconType.getFileName(), e);
         }
