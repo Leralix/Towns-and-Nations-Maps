@@ -1,10 +1,15 @@
-package org.leralix.tancommon.storage;
+package org.leralix.tancommon.geometry;
 
-import java.util.*;
+import org.leralix.tancommon.storage.TileFlags;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
 
 public class GenericHoleDetector {
 
-    private TileFlags gridFlags;
+    private final TileFlags gridFlags;
 
     public GenericHoleDetector(TileFlags gridFlags) {
         this.gridFlags = gridFlags;

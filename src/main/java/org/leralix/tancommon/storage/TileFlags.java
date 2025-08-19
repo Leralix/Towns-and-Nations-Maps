@@ -1,9 +1,9 @@
 package org.leralix.tancommon.storage;
 
-import java.util.*;
+import java.util.HashMap;
 
 public class TileFlags {
-    private final HashMap<Long, long[]> chunkmap = new HashMap<>();
+    public final HashMap<Long, long[]> chunkmap = new HashMap<>();
     private long last_key = Long.MAX_VALUE;
     private long[] last_row;
 

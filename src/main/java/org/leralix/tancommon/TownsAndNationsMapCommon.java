@@ -7,11 +7,14 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.leralix.lib.data.PluginVersion;
+import org.leralix.lib.utils.config.ConfigTag;
+import org.leralix.lib.utils.config.ConfigUtil;
 import org.leralix.tancommon.bstat.Metrics;
 import org.leralix.tancommon.commands.PlayerCommandManager;
+import org.leralix.tancommon.geometry.ChunkManager;
+import org.leralix.tancommon.geometry.PolygonBuilder;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
-import org.leralix.tancommon.storage.ChunkManager;
 import org.leralix.tancommon.update.UpdateChunks;
 import org.leralix.tancommon.update.UpdateForts;
 import org.leralix.tancommon.update.UpdateLandMarks;
@@ -31,7 +34,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
     private final Logger logger = this.getLogger();
     private CommonMarkerRegister markerRegister;
     private long updatePeriod;
-    private final PluginVersion pluginVersion = new PluginVersion(0,13 ,0);
+    private final PluginVersion pluginVersion = new PluginVersion(0, 13, 0);
 
     private UpdateLandMarks updateLandMarks;
     private UpdateChunks updateChunks;
@@ -61,8 +64,8 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         TanAPI api = TanAPI.getInstance();
 
         PluginVersion minTanVersion = api.getMinimumSupportingMapPlugin();
-        if(pluginVersion.isOlderThan(minTanVersion)){
-            logger.log(Level.SEVERE,subMapName + "Towns and Nations is not compatible with this version of tanmap (minimum version: {0})", minTanVersion);
+        if (pluginVersion.isOlderThan(minTanVersion)) {
+            logger.log(Level.SEVERE, subMapName + "Towns and Nations is not compatible with this version of tanmap (minimum version: {0})", minTanVersion);
             setEnabled(false);
             return;
         }
@@ -86,7 +89,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         int configVersion = plugin.getConfig().getInt("config-version", 0);
         int internalConfigVersion = internalConfig.getInt("config-version", 999);
 
-        if(internalConfigVersion != configVersion){
+        if (internalConfigVersion != configVersion) {
             plugin.getLogger().info(subMapName + "Updating config from version " + configVersion + " to version version " + internalConfigVersion);
             plugin.saveResource(configFileName, true);
             getConfig().set("config-version", internalConfigVersion);
@@ -99,8 +102,8 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         markerRegister = createMarkerRegister();
         registerIcons(markerRegister);
 
-        if(!markerRegister.isWorking()){
-            logger.severe(subMapName +  "Cannot find marker API, retrying in 5 seconds");
+        if (!markerRegister.isWorking()) {
+            logger.severe(subMapName + "Cannot find marker API, retrying in 5 seconds");
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -109,12 +112,11 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
             }.runTaskLater(this, 100);
             return;
         }
-        logger.info(subMapName +  "Marker API found");
-
+        logger.info(subMapName + "Marker API found");
 
 
         int per = getConfig().getInt("update.period", 300);
-        if(per < 15) per = 15;
+        if (per < 15) per = 15;
         updatePeriod = per * 20L;
 
         markerRegister.setup();
@@ -127,7 +129,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
             iconsDir.mkdirs();
         }
 
-        for(IconType iconType : IconType.values()) {
+        for (IconType iconType : IconType.values()) {
             File iconFile = new File(iconsDir, iconType.getFileName());
             if (!iconFile.exists()) {
                 getPlugin().saveResource("icons/" + iconType.getFileName(), true);
@@ -137,7 +139,11 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
     }
 
     private void startTasks() {
-        updateChunks = new UpdateChunks(new ChunkManager(markerRegister), updatePeriod);
+
+        int maxIters = ConfigUtil.getCustomConfig(ConfigTag.MAIN).getInt("polygon_max_points", 100000);
+        PolygonBuilder polygonBuilder = new PolygonBuilder(maxIters);
+
+        updateChunks = new UpdateChunks(new ChunkManager(markerRegister, polygonBuilder), updatePeriod);
         updateLandMarks = new UpdateLandMarks(markerRegister, updatePeriod);
         updateForts = new UpdateForts(markerRegister, updatePeriod);
 
@@ -154,7 +160,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
 
     }
 
-    public static TownsAndNationsMapCommon getPlugin(){
+    public static TownsAndNationsMapCommon getPlugin() {
         return plugin;
     }
 

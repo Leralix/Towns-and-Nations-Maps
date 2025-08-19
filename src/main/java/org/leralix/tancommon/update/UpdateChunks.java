@@ -1,8 +1,12 @@
 package org.leralix.tancommon.update;
 
 import org.bukkit.plugin.Plugin;
-import org.leralix.tancommon.storage.*;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
+import org.leralix.tancommon.geometry.ChunkManager;
+import org.leralix.tancommon.storage.RegionDescription;
+import org.leralix.tancommon.storage.RegionDescriptionStorage;
+import org.leralix.tancommon.storage.TownDescription;
+import org.leralix.tancommon.storage.TownDescriptionStorage;
 import org.tan.api.TanAPI;
 import org.tan.api.interfaces.TanRegion;
 import org.tan.api.interfaces.TanTown;
@@ -36,13 +40,13 @@ public class UpdateChunks implements Runnable {
         for(TanTown townData : tanAPI.getTerritoryManager().getTowns()){
             TownDescription townDescription = new TownDescription(townData);
             TownDescriptionStorage.add(townDescription);
-            chunkManager.updateTown(townData);
+            chunkManager.update(townData);
         }
 
         for(TanRegion regionData : tanAPI.getTerritoryManager().getRegions()){
             RegionDescription regionDescription = new RegionDescription(regionData);
             RegionDescriptionStorage.add(regionDescription);
-            chunkManager.updateRegion(regionData);
+            chunkManager.update(regionData);
         }
 
 
