@@ -72,6 +72,7 @@ public abstract class CommonMarkerRegister {
         else
             ownerName = "No owner";
 
+        res = res.replace("%LANDMARK_NAME%", landmark.getName());
         res = res.replace("%QUANTITY%", String.valueOf(reward.getAmount()) );
         res = res.replace("%ITEM%", reward.getType().name());
         res = res.replace("%OWNER%", ownerName);
