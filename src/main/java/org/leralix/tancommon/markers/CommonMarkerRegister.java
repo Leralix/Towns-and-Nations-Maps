@@ -2,6 +2,8 @@ package org.leralix.tancommon.markers;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.leralix.lib.utils.config.ConfigTag;
+import org.leralix.lib.utils.config.ConfigUtil;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.tan.api.interfaces.TanFort;
@@ -15,9 +17,7 @@ public abstract class CommonMarkerRegister {
 
 
     public void setup(){
-        FileConfiguration cfg = TownsAndNationsMapCommon.getPlugin().getConfig();
-        cfg.options().copyDefaults(true); //TODO : check if that is really useful
-        TownsAndNationsMapCommon.getPlugin().saveConfig();
+        FileConfiguration cfg = ConfigUtil.getCustomConfig(ConfigTag.MAIN);
 
         String id = "townsandnations.landmarks";
         String name = cfg.getString("landmark_layer.name", "Towns and Nations - Landmarks");

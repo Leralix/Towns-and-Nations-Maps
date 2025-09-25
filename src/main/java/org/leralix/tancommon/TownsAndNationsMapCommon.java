@@ -1,7 +1,5 @@
 package org.leralix.tancommon;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,8 +19,6 @@ import org.leralix.tancommon.update.UpdateLandMarks;
 import org.tan.api.TanAPI;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,30 +67,12 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         }
         Objects.requireNonNull(getCommand("tanmap")).setExecutor(new PlayerCommandManager());
 
-        checkConfigVersion();
+        ConfigUtil.saveAndUpdateResource(this, "config.yml");
+        ConfigUtil.addCustomConfig(this, "config.yml", ConfigTag.MAIN);
+
         initialise();
 
         logger.info(subMapName + "Plugin is running");
-    }
-
-    private void checkConfigVersion() {
-        String configFileName = "config.yml";
-
-        InputStream internalConfigStream = plugin.getResource(configFileName);
-        if (internalConfigStream == null) {
-            return;
-        }
-        FileConfiguration internalConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(internalConfigStream));
-
-        int configVersion = plugin.getConfig().getInt("config-version", 0);
-        int internalConfigVersion = internalConfig.getInt("config-version", 999);
-
-        if (internalConfigVersion != configVersion) {
-            plugin.getLogger().info(subMapName + "Updating config from version " + configVersion + " to version version " + internalConfigVersion);
-            plugin.saveResource(configFileName, true);
-            getConfig().set("config-version", internalConfigVersion);
-        }
-
     }
 
     private void initialise() {
@@ -115,7 +93,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         logger.info(subMapName + "Marker API found");
 
 
-        int per = getConfig().getInt("update.period", 300);
+        int per = ConfigUtil.getCustomConfig(ConfigTag.MAIN).getInt("update.period", 300);
         if (per < 15) per = 15;
         updatePeriod = per * 20L;
 
