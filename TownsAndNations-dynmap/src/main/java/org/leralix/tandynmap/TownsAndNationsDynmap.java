@@ -1,11 +1,7 @@
 package org.leralix.tandynmap;
 
-import org.bukkit.plugin.Plugin;
-import org.dynmap.DynmapAPI;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
-import org.leralix.tancommon.markers.CommonLayerAPI;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
-import org.leralix.tandynmap.markers.DynmapLayerAPI;
 
 public class TownsAndNationsDynmap extends TownsAndNationsMapCommon {
 
