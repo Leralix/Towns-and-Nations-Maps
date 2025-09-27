@@ -13,6 +13,7 @@ import org.leralix.tancommon.geometry.ChunkManager;
 import org.leralix.tancommon.geometry.PolygonBuilder;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
+import org.leralix.tancommon.storage.Constants;
 import org.leralix.tancommon.update.UpdateChunks;
 import org.leralix.tancommon.update.UpdateForts;
 import org.leralix.tancommon.update.UpdateLandMarks;
@@ -93,9 +94,9 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         logger.info(subMapName + "Marker API found");
 
 
-        int per = ConfigUtil.getCustomConfig(ConfigTag.MAIN).getInt("update.period", 300);
-        if (per < 15) per = 15;
-        updatePeriod = per * 20L;
+        int period = Constants.getUpdatePeriod();
+        if (period < 15) period = 15;
+        updatePeriod = period * 20L;
 
         markerRegister.setup();
         startTasks();
@@ -118,8 +119,8 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
 
     private void startTasks() {
 
-        int maxIters = ConfigUtil.getCustomConfig(ConfigTag.MAIN).getInt("polygon_max_points", 100000);
-        PolygonBuilder polygonBuilder = new PolygonBuilder(maxIters);
+
+        PolygonBuilder polygonBuilder = new PolygonBuilder(Constants.getMaxIteration());
 
         updateChunks = new UpdateChunks(new ChunkManager(markerRegister, polygonBuilder), updatePeriod);
         updateLandMarks = new UpdateLandMarks(markerRegister, updatePeriod);
@@ -131,11 +132,6 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         getServer().getScheduler().scheduleSyncDelayedTask(this, updateChunks, 40);
         getServer().getScheduler().scheduleSyncDelayedTask(this, updateLandMarks, 40);
         getServer().getScheduler().scheduleSyncRepeatingTask(this, updateForts, 40, updatePeriod);
-    }
-
-    @Override
-    public void onDisable() {
-
     }
 
     public static TownsAndNationsMapCommon getPlugin() {

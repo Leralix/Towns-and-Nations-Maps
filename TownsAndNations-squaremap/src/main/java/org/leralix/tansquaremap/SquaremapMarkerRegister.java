@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
+import org.leralix.lib.position.Vector2D;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
@@ -179,6 +180,23 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
     }
 
     @Override
+    public void registerCapital(String townName, Vector2D capitalPosition) {
+
+        Point point = Point.of(capitalPosition.getX() * 16 * 8, capitalPosition.getZ() * 16 + 8);
+
+        MarkerOptions markerOptions = MarkerOptions.builder().
+                hoverTooltip(townName).
+                build();
+
+        String imageKey = IconType.CAPITAL.getFileName();
+
+        Marker marker = Marker.icon(point, Key.of(imageKey),16).markerOptions(markerOptions);
+
+        TanKey key = new TanKey(capitalPosition.getWorld());
+        fortLayerMap.get(key).addMarker(Key.of(townName), marker);
+    }
+
+    @Override
     public void registerIcon(IconType iconType) {
 
         try {
@@ -191,6 +209,6 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
         } catch (IOException e) {
             throw new RuntimeException("Erreur lors du chargement de landmark.png", e);
         }
-
     }
+
 }

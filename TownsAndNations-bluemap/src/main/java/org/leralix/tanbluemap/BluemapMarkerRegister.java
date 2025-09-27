@@ -11,6 +11,7 @@ import de.bluecolored.bluemap.api.math.Shape;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.leralix.lib.position.Vector2D;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
@@ -43,6 +44,7 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
         this.landmarkLayerMap = new HashMap<>();
         this.fortLayerMap = new HashMap<>();
     }
+
     @Override
     protected void setupLandmarkLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
         setupLayer(id, name, chunkLayerPriority, hideByDefault, worldsName, landmarkLayerMap);
@@ -60,17 +62,16 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
 
     private void setupLayer(String id, String name, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName, Map<TanKey, MarkerSet> layerMap) {
         List<World> worlds = new ArrayList<>();
-        if(worldsName.contains("all") || worldsName.isEmpty()) {
+        if (worldsName.contains("all") || worldsName.isEmpty()) {
             worlds.addAll(Bukkit.getWorlds());
-        }
-        else {
+        } else {
             for (String worldName : worldsName) {
                 World world = Bukkit.getWorld(worldName);
                 if (world != null)
                     worlds.add(world);
             }
         }
-        for(World bukkitWorld : worlds) {
+        for (World bukkitWorld : worlds) {
             MarkerSet markerSet = MarkerSet.builder()
                     .label(name)
                     .sorting(chunkLayerPriority)
@@ -110,7 +111,7 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
                 .maxDistance(2000)
                 .build();
 
-        this.landmarkLayerMap.get(new TanKey(world)).getMarkers().put(landmark.getID(),marker);
+        this.landmarkLayerMap.get(new TanKey(world)).getMarkers().put(landmark.getID(), marker);
     }
 
     @Override
@@ -122,7 +123,7 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
 
         POIMarker marker = POIMarker.builder()
                 .label(fort.getName())
-                .icon(iconFileName,16, 16)
+                .icon(iconFileName, 16, 16)
                 .detail(generateDescription(fort))
                 .position(location.getX(), location.getY(), location.getZ())
                 .maxDistance(2000)
@@ -131,7 +132,7 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
     }
 
     @Override
-    public void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, PolygonCoordinate coordinates, String infoWindowPopup, Collection<PolygonCoordinate> holes){
+    public void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, PolygonCoordinate coordinates, String infoWindowPopup, Collection<PolygonCoordinate> holes) {
 
         World world = Bukkit.getWorld(worldName);
         if (world == null) {
@@ -153,7 +154,7 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
 
 
         ShapeMarker shapeMarker = ShapeMarker.builder()
-                .shape(shape,70)
+                .shape(shape, 70)
                 .label(territoryData.getName())
                 .detail(infoWindowPopup)
                 .lineColor(lineColor)
@@ -172,8 +173,8 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
         Collection<Vector2d> pointList = new ArrayList<>();
         int[] x = coordinates.getX();
         int[] z = coordinates.getZ();
-        for(int i = 0; i < x.length; i++){
-            pointList.add(new Vector2d(x[i],z[i]));
+        for (int i = 0; i < x.length; i++) {
+            pointList.add(new Vector2d(x[i], z[i]));
         }
 
         return Shape.builder().addPoints(pointList).build();
@@ -181,21 +182,38 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
 
     @Override
     public void deleteAllMarkers() {
-        for(MarkerSet marker : chunkLayerMap.values()){
-            for(String id : marker.getMarkers().keySet()){
+        for (MarkerSet marker : chunkLayerMap.values()) {
+            for (String id : marker.getMarkers().keySet()) {
                 marker.remove(id);
             }
         }
-        for(MarkerSet marker : landmarkLayerMap.values()){
-            for(String id : marker.getMarkers().keySet()){
+        for (MarkerSet marker : landmarkLayerMap.values()) {
+            for (String id : marker.getMarkers().keySet()) {
                 marker.remove(id);
             }
         }
-        for(MarkerSet marker : fortLayerMap.values()){
-            for(String id : marker.getMarkers().keySet()){
+        for (MarkerSet marker : fortLayerMap.values()) {
+            for (String id : marker.getMarkers().keySet()) {
                 marker.remove(id);
             }
         }
+
+    }
+
+    @Override
+    public void registerCapital(String townName, Vector2D capitalPosition) {
+        World world = capitalPosition.getWorld();
+
+        String iconFileName = PATH + IconType.FORT.getFileName();
+
+        POIMarker marker = POIMarker.builder()
+                .label(townName)
+                .icon(iconFileName, 16, 16)
+                .detail(townName)
+                .position(capitalPosition.getX() * 16 * 8, 70, capitalPosition.getZ() * 16 * 8)
+                .maxDistance(2000)
+                .build();
+        this.fortLayerMap.get(new TanKey(world)).getMarkers().put(townName, marker);
 
     }
 

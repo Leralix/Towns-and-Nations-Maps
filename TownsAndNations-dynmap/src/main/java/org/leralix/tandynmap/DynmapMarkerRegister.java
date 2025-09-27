@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.*;
+import org.leralix.lib.position.Vector2D;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
@@ -199,6 +200,24 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
         for(AreaMarker areaMarker : fortMarkerSet.getAreaMarkers()){
             areaMarker.deleteMarker();
         }
+    }
+
+    @Override
+    public void registerCapital(String townName, Vector2D capitalPosition) {
+        Marker marker = fortMarkerSet.findMarker(townName);
+        if (marker != null) {
+            marker.deleteMarker();
+        }
+
+        marker = fortMarkerSet.createMarker(
+                townName,
+                townName,
+                capitalPosition.getWorld().getName(),
+                capitalPosition.getX() * 16 * 8,
+                70,
+                capitalPosition.getZ() * 16 * 8,
+                dynmapLayerAPI.getMarkerIcon(IconType.CAPITAL.getFileName()), true);
+        marker.setDescription(townName);
     }
 
     @Override

@@ -2,6 +2,7 @@ package org.leralix.tancommon.markers;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.leralix.lib.position.Vector2D;
 import org.leralix.lib.utils.config.ConfigTag;
 import org.leralix.lib.utils.config.ConfigUtil;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
@@ -9,6 +10,7 @@ import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.tan.api.interfaces.TanFort;
 import org.tan.api.interfaces.TanLandmark;
 import org.tan.api.interfaces.TanTerritory;
+import org.tan.api.interfaces.TanTown;
 
 import java.util.Collection;
 import java.util.List;
@@ -95,4 +97,6 @@ public abstract class CommonMarkerRegister {
     public abstract void deleteAllMarkers();
 
     public abstract void registerIcon(IconType iconType);
+
+    public abstract void registerCapital(String townName, Vector2D capitalPosition);
 }
