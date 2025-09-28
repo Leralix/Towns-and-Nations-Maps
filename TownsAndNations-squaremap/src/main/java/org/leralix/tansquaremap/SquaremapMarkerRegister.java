@@ -12,6 +12,7 @@ import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.leralix.tancommon.storage.TanKey;
 import org.tan.api.interfaces.TanFort;
 import org.tan.api.interfaces.TanLandmark;
+import org.tan.api.interfaces.TanProperty;
 import org.tan.api.interfaces.TanTerritory;
 import xyz.jpenilla.squaremap.api.*;
 import xyz.jpenilla.squaremap.api.Point;
@@ -31,6 +32,7 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
     private final Map<TanKey, SimpleLayerProvider> chunkLayerMap;
     private final Map<TanKey, SimpleLayerProvider> landmarkLayerMap;
     private final Map<TanKey, SimpleLayerProvider> fortLayerMap;
+    private final Map<TanKey, SimpleLayerProvider> propertiesLayerMap;
 
 
     public SquaremapMarkerRegister() {
@@ -38,6 +40,7 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
         this.chunkLayerMap = new HashMap<>();
         this.landmarkLayerMap = new HashMap<>();
         this.fortLayerMap = new HashMap<>();
+        this.propertiesLayerMap = new HashMap<>();
     }
 
     @Override
@@ -52,6 +55,11 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
     @Override
     protected void setupFortLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
         setupLayer(id, name, chunkLayerPriority, hideByDefault, worldsName, fortLayerMap);
+    }
+
+    @Override
+    protected void setupPropertyLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
+        setupLayer(id, name, chunkLayerPriority, hideByDefault, worldsName, propertiesLayerMap);
     }
 
     private void setupLayer(String id, String name, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName, Map<TanKey, SimpleLayerProvider> landmarkLayerMap) {
@@ -121,6 +129,11 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
 
         TanKey key = new TanKey(location.getWorld());
         landmarkLayerMap.get(key).addMarker(Key.of(fort.getID()), marker);
+    }
+
+    @Override
+    public void registerNewProperty(TanProperty tanProperty) {
+
     }
 
     @Override

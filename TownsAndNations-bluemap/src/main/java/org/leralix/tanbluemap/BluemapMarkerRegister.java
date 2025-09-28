@@ -3,6 +3,7 @@ package org.leralix.tanbluemap;
 import com.flowpowered.math.vector.Vector2d;
 import de.bluecolored.bluemap.api.BlueMapAPI;
 import de.bluecolored.bluemap.api.BlueMapMap;
+import de.bluecolored.bluemap.api.markers.ExtrudeMarker;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
 import de.bluecolored.bluemap.api.markers.ShapeMarker;
@@ -12,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.leralix.lib.position.Vector2D;
+import org.leralix.lib.position.Vector3D;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
@@ -19,6 +21,7 @@ import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.leralix.tancommon.storage.TanKey;
 import org.tan.api.interfaces.TanFort;
 import org.tan.api.interfaces.TanLandmark;
+import org.tan.api.interfaces.TanProperty;
 import org.tan.api.interfaces.TanTerritory;
 
 import java.io.File;
@@ -36,6 +39,7 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
     private final Map<TanKey, MarkerSet> chunkLayerMap;
     private final Map<TanKey, MarkerSet> landmarkLayerMap;
     private final Map<TanKey, MarkerSet> fortLayerMap;
+    private final Map<TanKey, MarkerSet> propertyLayerMap;
 
     public BluemapMarkerRegister() {
         super();
@@ -43,6 +47,7 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
         this.chunkLayerMap = new HashMap<>();
         this.landmarkLayerMap = new HashMap<>();
         this.fortLayerMap = new HashMap<>();
+        propertyLayerMap = new HashMap<>();
     }
 
     @Override
@@ -58,6 +63,11 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
     @Override
     protected void setupFortLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
         setupLayer(id, name, chunkLayerPriority, hideByDefault, worldsName, fortLayerMap);
+    }
+
+    @Override
+    protected void setupPropertyLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
+        setupLayer(id, name, chunkLayerPriority, hideByDefault, worldsName, propertyLayerMap);
     }
 
     private void setupLayer(String id, String name, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName, Map<TanKey, MarkerSet> layerMap) {
@@ -129,6 +139,38 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
                 .maxDistance(2000)
                 .build();
         this.fortLayerMap.get(new TanKey(world)).getMarkers().put(fort.getID(), marker);
+    }
+
+    @Override
+    public void registerNewProperty(TanProperty tanProperty) {
+        Vector3D point1 = tanProperty.getFirstCorner();
+        Vector3D point2 = tanProperty.getSecondCorner();
+
+        int minY = Math.min(point1.getY(), point2.getY());
+        int maxY = Math.max(point1.getY(), point2.getY());
+
+        int[] x = new int[] {
+                point1.getX(),
+                point2.getX(),
+                point2.getX(),
+                point1.getX()
+        };
+
+        int[] z = new int[] {
+                point1.getZ(),
+                point1.getZ(),
+                point2.getZ(),
+                point2.getZ()
+        };
+
+        var boundaries = new PolygonCoordinate(x, z);
+        Shape shape = getVector(boundaries);
+
+        ExtrudeMarker propertymarker = ExtrudeMarker.builder()
+                .shape(shape, minY, maxY)
+                .build();
+
+        this.chunkLayerMap.get(new TanKey(point1.getWorld())).getMarkers().put(tanProperty.getID(), propertymarker);
     }
 
     @Override

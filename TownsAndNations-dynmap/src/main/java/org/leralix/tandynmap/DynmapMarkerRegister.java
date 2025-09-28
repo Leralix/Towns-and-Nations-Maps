@@ -10,10 +10,7 @@ import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
 import org.leralix.tancommon.storage.PolygonCoordinate;
-import org.tan.api.interfaces.TanClaimedChunk;
-import org.tan.api.interfaces.TanFort;
-import org.tan.api.interfaces.TanLandmark;
-import org.tan.api.interfaces.TanTerritory;
+import org.tan.api.interfaces.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +24,7 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
     private MarkerSet landmarkMarkerSet;
     private MarkerSet chunkMarkerSet;
     private MarkerSet fortMarkerSet;
+    private MarkerSet propertiesMarkerSet;
 
 
     public DynmapMarkerRegister(){
@@ -52,6 +50,11 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
     @Override
     protected void setupFortLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
         fortMarkerSet = dynmapLayerAPI.createMarkerSet("forts", name, null, false);
+    }
+
+    @Override
+    protected void setupPropertyLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName) {
+        propertiesMarkerSet = dynmapLayerAPI.createMarkerSet("properties", name, null, false);
     }
 
     @Override
@@ -99,6 +102,46 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
                 location.getZ(),
                 dynmapLayerAPI.getMarkerIcon(IconType.FORT.getFileName()), true);
         marker.setDescription(generateDescription(fort));
+    }
+
+    @Override
+    public void registerNewProperty(TanProperty tanProperty) {
+
+        String id = tanProperty.getID();
+
+        AreaMarker areaMarker = propertiesMarkerSet.findAreaMarker(id);
+        if(areaMarker != null){
+            areaMarker.deleteMarker();
+        }
+
+        var point1 = tanProperty.getFirstCorner();
+        var point2 = tanProperty.getSecondCorner();
+
+        double[] x = new double[] {
+                point1.getX(),
+                point2.getX(),
+                point2.getX(),
+                point1.getX()
+        };
+
+        double[] z = new double[] {
+                point1.getZ(),
+                point1.getZ(),
+                point2.getZ(),
+                point2.getZ()
+        };
+
+        areaMarker = propertiesMarkerSet.createAreaMarker(
+                id,
+                tanProperty.getName(),
+                false,
+                point1.getWorld().getName(),
+                x,
+                z,
+                false);
+        areaMarker.setLineStyle(0, 0.6, Color.GREEN.asBGR());
+        areaMarker.setFillStyle(0.6, Color.GREEN.asBGR());
+        areaMarker.setDescription("Chat");
     }
 
     @Override
