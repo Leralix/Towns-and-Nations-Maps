@@ -256,9 +256,9 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
                 townName,
                 townName,
                 capitalPosition.getWorld().getName(),
-                capitalPosition.getX() * 16 * 8,
+                capitalPosition.getX() * 16 + 8,
                 70,
-                capitalPosition.getZ() * 16 * 8,
+                capitalPosition.getZ() * 16 + 8,
                 dynmapLayerAPI.getMarkerIcon(IconType.CAPITAL.getFileName()), true);
         marker.setDescription(townName);
     }

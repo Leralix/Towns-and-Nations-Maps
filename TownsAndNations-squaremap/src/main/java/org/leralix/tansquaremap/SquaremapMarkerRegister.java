@@ -195,7 +195,7 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
     @Override
     public void registerCapital(String townName, Vector2D capitalPosition) {
 
-        Point point = Point.of(capitalPosition.getX() * 16 * 8, capitalPosition.getZ() * 16 + 8);
+        Point point = Point.of(capitalPosition.getX() * 16 + 8, capitalPosition.getZ() * 16 + 8);
 
         MarkerOptions markerOptions = MarkerOptions.builder().
                 hoverTooltip(townName).

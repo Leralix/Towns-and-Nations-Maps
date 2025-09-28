@@ -252,7 +252,7 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
                 .label(townName)
                 .icon(iconFileName, 16, 16)
                 .detail(townName)
-                .position(capitalPosition.getX() * 16 * 8, 70, capitalPosition.getZ() * 16 * 8)
+                .position(capitalPosition.getX() * 16 + 8, 70, capitalPosition.getZ() * 16 + 8)
                 .maxDistance(2000)
                 .build();
         this.fortLayerMap.get(new TanKey(world)).getMarkers().put(townName, marker);
