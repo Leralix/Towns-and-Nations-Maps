@@ -17,6 +17,7 @@ import org.leralix.lib.position.Vector3D;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
+import org.leralix.tancommon.storage.Constants;
 import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.leralix.tancommon.storage.TanKey;
 import org.tan.api.interfaces.TanFort;
@@ -166,11 +167,19 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
         var boundaries = new PolygonCoordinate(x, z);
         Shape shape = getVector(boundaries);
 
+        Color fillColor = new Color(Constants.getPropertyColor(tanProperty), 0.4f);
+        Color lineColor = new Color(Constants.getPropertyColor(tanProperty), 0.7f);
+
         ExtrudeMarker propertymarker = ExtrudeMarker.builder()
+                .label(tanProperty.getName())
+                .detail(generateDescription(tanProperty))
+                .fillColor(fillColor)
+                .lineColor(lineColor)
                 .shape(shape, minY, maxY)
                 .build();
 
-        this.chunkLayerMap.get(new TanKey(point1.getWorld())).getMarkers().put(tanProperty.getID(), propertymarker);
+
+        this.propertyLayerMap.get(new TanKey(point1.getWorld())).getMarkers().put(tanProperty.getID(), propertymarker);
     }
 
     @Override
@@ -246,7 +255,7 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
     public void registerCapital(String townName, Vector2D capitalPosition) {
         World world = capitalPosition.getWorld();
 
-        String iconFileName = PATH + IconType.FORT.getFileName();
+        String iconFileName = PATH + IconType.CAPITAL.getFileName();
 
         POIMarker marker = POIMarker.builder()
                 .label(townName)

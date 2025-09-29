@@ -17,6 +17,7 @@ import org.leralix.tancommon.storage.Constants;
 import org.leralix.tancommon.update.UpdateChunks;
 import org.leralix.tancommon.update.UpdateForts;
 import org.leralix.tancommon.update.UpdateLandMarks;
+import org.leralix.tancommon.update.UpdateProperty;
 import org.tan.api.TanAPI;
 
 import java.io.File;
@@ -36,6 +37,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
     private UpdateLandMarks updateLandMarks;
     private UpdateChunks updateChunks;
     private UpdateForts updateForts;
+    private UpdateProperty updateProperty;
 
     private final String subMapName = "[TaN - " + getSubMapName() + "] - ";
 
@@ -70,6 +72,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
 
         ConfigUtil.saveAndUpdateResource(this, "config.yml");
         ConfigUtil.addCustomConfig(this, "config.yml", ConfigTag.MAIN);
+        Constants.init();
 
         initialise();
 
@@ -125,6 +128,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         updateChunks = new UpdateChunks(new ChunkManager(markerRegister, polygonBuilder), updatePeriod);
         updateLandMarks = new UpdateLandMarks(markerRegister, updatePeriod);
         updateForts = new UpdateForts(markerRegister, updatePeriod);
+        updateProperty = new UpdateProperty(markerRegister, updatePeriod);
 
         Runnable deleteAllRunnable = () -> markerRegister.deleteAllMarkers();
 
@@ -132,6 +136,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         getServer().getScheduler().scheduleSyncDelayedTask(this, updateChunks, 40);
         getServer().getScheduler().scheduleSyncDelayedTask(this, updateLandMarks, 40);
         getServer().getScheduler().scheduleSyncRepeatingTask(this, updateForts, 40, updatePeriod);
+        getServer().getScheduler().scheduleSyncDelayedTask(this, updateProperty, 40);
     }
 
     public static TownsAndNationsMapCommon getPlugin() {
@@ -142,6 +147,8 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         markerRegister.deleteAllMarkers();
         updateChunks.update();
         updateLandMarks.update();
+        updateForts.update();
+        updateProperty.update();
     }
 
     protected abstract String getSubMapName();

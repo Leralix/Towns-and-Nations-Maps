@@ -61,9 +61,33 @@ fort_layer:
   # Make the layer hidden by default
   hide_by_default: false
   # ordering priority in layer menu (low goes before high - default is 0)
-  priority: 1
+  priority: 2
   # (optional) set minimum zoom level before layer is visible (0 = default, always visible)
   minimum_zoom: 0
+
+  #Property layer
+  property_layer:
+    # Name of the layer
+    name: "Towns and Nations - Properties"
+    # List of worlds to show on the map
+    # use "all" to show all worlds
+    worlds:
+      #  - "world"
+      #  - "world_nether"
+      #  - "world_the_end"
+      - "all"
+    # Make the layer hidden by default
+    hide_by_default: false
+    # ordering priority in layer menu (low goes before high - default is 0)
+    priority: 1
+    # (optional) set minimum zoom level before layer is visible (0 = default, always visible)
+    minimum_zoom: 0
+
+propertiesColor:
+    owned: "#FFA500" # Orange
+    for_rent: "#89CFF0" # Blue
+    rented: "#ff0000" # Red
+    for_sale: "#008000" # Green
 
 
 # Format for info windows
@@ -101,3 +125,8 @@ landmark_infowindow: "<div style=\"white-space: nowrap\"><div class=\"infowindow
 #%OCCUPIER% - Occupier of the fort.
 fort_infowindow: "<div style=\"white-space: nowrap; display: inline-block;\"><div class=\"infowindow\" style=\"display: inline-block;\"><span style=\"font-size:140%; font-weight:bold;\">%FORT_NAME%</span><br><hr><span style=\"margin-left: 10px; font-size:100%;\"><b>Owner:</b>%OWNER% <b>|</b> <b>Occupied by:</b> %OCCUPIER%</span></div></div>"
 
+# %PROPERTY_NAME% - Name of the property
+# %PROPERTY_DESCRIPTION% - Name of the property
+# %PROPERTY_OWNER% - Name of the property owner
+# %STATUS% - Status of the property (Owned, For Rent, Rented by..., For Sale)
+property_infowindow: "<div style=\"white-space: nowrap\"><div class=\"infowindow\"><span style=\"font-size:140%;font-weight:bold;\">%PROPERTY_NAME%</span></span><br><br><span style=\"font-size:100%;font-style:italic;\">%PROPERTY_DESCRIPTION%</span><br><hr><span style=\"font-size:100%;\"><span>Owned by :</b> %PROPERTY_OWNER%</span><br>Status :  <span>%STATUS% </span></div></div>"

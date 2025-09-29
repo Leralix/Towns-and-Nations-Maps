@@ -31,7 +31,7 @@ public abstract class CommonMarkerRegister {
 
 
         String id2 = "townsandnations.chunks";
-        String name2 = cfg.getString("chunk_layer.name", "Towns and Nations");
+        String name2 = cfg.getString("chunk_layer.name", "Towns and Nations - Territories");
         int minZoom2 = Math.max(cfg.getInt("chunk_layer.minimum_zoom", 0), 0);
         int chunkLayerPriority2 = Math.max(cfg.getInt("chunk_layer.priority", 10), 0);
         boolean hideByDefault2 = cfg.getBoolean("chunk_layer.hide_by_default", false);
@@ -39,19 +39,19 @@ public abstract class CommonMarkerRegister {
         setupChunkLayer(id2, name2, minZoom2, chunkLayerPriority2, hideByDefault2, worldsName2);
 
         String id3 = "townsandnations.forts";
-        String name3 = cfg.getString("chunk_layer.name", "Towns and Nations");
-        int minZoom3 = Math.max(cfg.getInt("chunk_layer.minimum_zoom", 0), 0);
-        int chunkLayerPriority3 = Math.max(cfg.getInt("chunk_layer.priority", 10), 0);
-        boolean hideByDefault3 = cfg.getBoolean("chunk_layer.hide_by_default", false);
-        List<String> worldsName3 = cfg.getStringList("chunk_layer.worlds");
+        String name3 = cfg.getString("fort_layer.name", "Towns and Nations - Forts");
+        int minZoom3 = Math.max(cfg.getInt("fort_layer.minimum_zoom", 0), 0);
+        int chunkLayerPriority3 = Math.max(cfg.getInt("fort_layer.priority", 10), 0);
+        boolean hideByDefault3 = cfg.getBoolean("fort_layer.hide_by_default", false);
+        List<String> worldsName3 = cfg.getStringList("fort_layer.worlds");
         setupFortLayer(id3, name3, minZoom3, chunkLayerPriority3, hideByDefault3, worldsName3);
 
-        String id4 = "townsandnations.properties";
-        String name4 = cfg.getString("chunk_layer.name", "Towns and Nations");
-        int minZoom4 = Math.max(cfg.getInt("chunk_layer.minimum_zoom", 0), 0);
-        int chunkLayerPriority4 = Math.max(cfg.getInt("chunk_layer.priority", 10), 0);
-        boolean hideByDefault4 = cfg.getBoolean("chunk_layer.hide_by_default", false);
-        List<String> worldsName4 = cfg.getStringList("chunk_layer.worlds");
+        String id4 = "townsandnations.property_layer";
+        String name4 = cfg.getString("property_layer.name", "Towns and Nations - properties");
+        int minZoom4 = Math.max(cfg.getInt("property_layer.minimum_zoom", 0), 0);
+        int chunkLayerPriority4 = Math.max(cfg.getInt("property_layer.priority", 10), 0);
+        boolean hideByDefault4 = cfg.getBoolean("property_layer.hide_by_default", false);
+        List<String> worldsName4 = cfg.getStringList("property_layer.worlds");
         setupPropertyLayer(id4, name4, minZoom4, chunkLayerPriority4, hideByDefault4, worldsName4);
 
     }
@@ -96,7 +96,37 @@ public abstract class CommonMarkerRegister {
         return res;
     }
 
-    protected String generateDescription(TanFort fort) {
+    protected String generateDescription(TanProperty property) {
+        String res = TownsAndNationsMapCommon.getPlugin().getConfig().getString("property_infowindow");
+        if (res == null)
+            return "No description";
+
+        String status;
+        if(property.isForSale()){
+            status = "For Sale (" + property.getSalePrice() + ")";
+        }
+        else if(property.isRented()){
+            status = "Rented by " + property.getRenter().get().getNameStored();
+        }
+        else if(property.isForRent()){
+            status = "For Rent (" + property.getRentPrice() + ")";
+        }
+        else{
+            status = "Not for sale or rent";
+        }
+
+
+
+        res = res.replace("%PROPERTY_NAME%", property.getName());
+        res = res.replace("%PROPERTY_DESCRIPTION%", property.getDescription());
+        res = res.replace("%PROPERTY_OWNER%", property.getOwner().getNameStored());
+        res = res.replace("%STATUS%", status);
+
+        return res;
+    }
+
+
+        protected String generateDescription(TanFort fort) {
 
         String res = TownsAndNationsMapCommon.getPlugin().getConfig().getString("fort_infowindow");
         if (res == null)

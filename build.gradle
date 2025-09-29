@@ -3,12 +3,7 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-
-    if (JavaVersion.current() < JavaVersion.VERSION_17) {
-        toolchain.languageVersion = JavaLanguageVersion.of(17)
-    }
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
 }
 
 subprojects {
@@ -23,7 +18,7 @@ subprojects {
         from rootProject.sourceSets.main.output
     }
 
-    def targetJavaVersion = project.name == "TownsAndNations-bluemap" ? 21 : 17
+    def targetJavaVersion = 21
     java {
         def javaVersion = JavaVersion.toVersion(targetJavaVersion)
         sourceCompatibility = targetJavaVersion
@@ -72,9 +67,9 @@ allprojects {
     dependencies {
         compileOnly "org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT"
         compileOnly "io.github.leralix:sphere-lib:0.5.1"
-        compileOnly "io.github.leralix:tan-api:0.5.4"
+        compileOnly "io.github.leralix:tan-api:0.5.5"
 
-        testImplementation 'io.github.leralix:tan-api:0.5.4'
+        testImplementation 'io.github.leralix:tan-api:0.5.5'
         testImplementation 'io.github.leralix:sphere-lib:0.5.2'
         testImplementation 'org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT'
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'

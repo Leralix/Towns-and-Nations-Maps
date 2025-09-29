@@ -118,7 +118,7 @@ public class ChunkManager {
             }
             claimedChunksToDraw = townBlockLeftToDraw; /* Replace list (null if no more to process) */
             if(ourShape != null) {
-                polyIndex = traceTerritoryOutline(territory, polyIndex, infoWindowPopup, currentWorld.getName(), ourShape, minx, minz);
+                 polyIndex = traceTerritoryOutline(territory, polyIndex, infoWindowPopup, currentWorld.getName(), ourShape, minx, minz);
             }
         }
 
