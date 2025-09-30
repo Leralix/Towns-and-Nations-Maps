@@ -25,7 +25,7 @@ chunk_layer:
   # Make the layer hidden by default
   hide_by_default: false
   # ordering priority in layer menu (low goes before high - default is 0)
-  priority: 0
+  priority: 10
   # (optional) set minimum zoom level before layer is visible (0 = default, always visible)
   minimum_zoom: 0
 
@@ -43,7 +43,7 @@ landmark_layer:
   # Make the layer hidden by default
   hide_by_default: false
   # ordering priority in layer menu (low goes before high - default is 0)
-  priority: 1
+  priority: 5
   # (optional) set minimum zoom level before layer is visible (0 = default, always visible)
   minimum_zoom: 0
 
@@ -61,7 +61,7 @@ fort_layer:
   # Make the layer hidden by default
   hide_by_default: false
   # ordering priority in layer menu (low goes before high - default is 0)
-  priority: 2
+  priority: 5
   # (optional) set minimum zoom level before layer is visible (0 = default, always visible)
   minimum_zoom: 0
 
@@ -79,7 +79,7 @@ fort_layer:
     # Make the layer hidden by default
     hide_by_default: false
     # ordering priority in layer menu (low goes before high - default is 0)
-    priority: 1
+    priority: 9
     # (optional) set minimum zoom level before layer is visible (0 = default, always visible)
     minimum_zoom: 0
 
@@ -91,7 +91,7 @@ propertiesColor:
 
 
 # Format for info windows
-# Use %<flagname>% for placeholders
+# Use %<FLAG_NAME>% for placeholders
 
 # %TOWN_NAME% - Name of the town
 # %DAYS_SINCE_CREATION% - Number of days since the town or region was created

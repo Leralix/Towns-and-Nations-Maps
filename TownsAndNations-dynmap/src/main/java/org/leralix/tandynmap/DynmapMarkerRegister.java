@@ -146,8 +146,6 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
         areaMarker.setDescription(generateDescription(tanProperty));
         areaMarker.setLineStyle(0, 0.4, color);
         areaMarker.setFillStyle(0.7, color);
-
-        areaMarker.setDescription("Chat");
     }
 
     @Override
