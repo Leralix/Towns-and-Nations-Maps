@@ -13,10 +13,7 @@ import org.leralix.tancommon.storage.Constants;
 import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.tan.api.interfaces.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class DynmapMarkerRegister extends CommonMarkerRegister {
 
@@ -26,6 +23,8 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
     private MarkerSet chunkMarkerSet;
     private MarkerSet fortMarkerSet;
     private MarkerSet propertiesMarkerSet;
+
+    private final Set<TanTerritory> territoryAlreadyDrawn = new HashSet<>();
 
 
     public DynmapMarkerRegister(){
@@ -156,44 +155,49 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
         //Dynmap does not allow polygon with holes.
         //To bypass this, polygon will only draw lines while each chunk will be drawn separately.
 
-        //Draw chunks
+        //Draw chunks if not already drawn (because this method is called multiple times for the same territory if multiple polygons)
         int i = 0;
-        for(TanClaimedChunk chunk : territoryData.getClaimedChunks())   {
 
-            String id = polyid + "_" + i;
-            AreaMarker areaMarker = chunkMarkerSet.findAreaMarker(id);
-            if(areaMarker != null){
-                areaMarker.deleteMarker();
+        if(!territoryAlreadyDrawn.contains(territoryData)){
+            for(TanClaimedChunk chunk : territoryData.getClaimedChunks())   {
+
+                String id = polyid + "_" + i;
+                AreaMarker areaMarker = chunkMarkerSet.findAreaMarker(id);
+                if(areaMarker != null){
+                    areaMarker.deleteMarker();
+                }
+
+
+                double[] x = new double[4];
+                double[] z = new double[4];
+
+                x[0] = (double) chunk.getX() * 16;
+                x[1] = (double) chunk.getX() * 16;
+                x[2] = (double) (chunk.getX() + 1) * 16 + 0.01;
+                x[3] = (double) (chunk.getX() + 1) * 16 + 0.01;
+
+                z[0] = (double) chunk.getZ() * 16;
+                z[1] = (double) (chunk.getZ() + 1) * 16 + 0.01;
+                z[2] = (double) (chunk.getZ() + 1) * 16 + 0.01;
+                z[3] = (double) chunk.getZ() * 16;
+
+                areaMarker = chunkMarkerSet.createAreaMarker(
+                        id,
+                        territoryData.getName() + "_" + i,
+                        b,
+                        worldName,
+                        x,
+                        z,
+                        false);
+
+                areaMarker.setLineStyle(0, 0.6, chunkColor.asRGB());
+                areaMarker.setFillStyle(0.6, chunkColor.asRGB());
+                areaMarker.setDescription(infoWindowPopup);
+                i++;
             }
-
-
-            double[] x = new double[4];
-            double[] z = new double[4];
-
-            x[0] = (double) chunk.getX() * 16;
-            x[1] = (double) chunk.getX() * 16;
-            x[2] = (double) (chunk.getX() + 1) * 16 + 0.01;
-            x[3] = (double) (chunk.getX() + 1) * 16 + 0.01;
-
-            z[0] = (double) chunk.getZ() * 16;
-            z[1] = (double) (chunk.getZ() + 1) * 16 + 0.01;
-            z[2] = (double) (chunk.getZ() + 1) * 16 + 0.01;
-            z[3] = (double) chunk.getZ() * 16;
-
-            areaMarker = chunkMarkerSet.createAreaMarker(
-                    id,
-                    territoryData.getName() + "_" + i,
-                    b,
-                    worldName,
-                    x,
-                    z,
-                    false);
-
-            areaMarker.setLineStyle(0, 0.6, chunkColor.asRGB());
-            areaMarker.setFillStyle(0.6, chunkColor.asRGB());
-            areaMarker.setDescription(infoWindowPopup);
-            i++;
+            territoryAlreadyDrawn.add(territoryData);
         }
+
 
 
 
@@ -238,6 +242,7 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
 
     @Override
     public void deleteAllMarkers() {
+        territoryAlreadyDrawn.clear();
         for(AreaMarker areaMarker : chunkMarkerSet.getAreaMarkers()){
             areaMarker.deleteMarker();
         }
