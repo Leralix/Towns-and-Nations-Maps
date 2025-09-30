@@ -8,6 +8,7 @@ import org.leralix.lib.position.Vector2D;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
+import org.leralix.tancommon.storage.Constants;
 import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.leralix.tancommon.storage.TanKey;
 import org.tan.api.interfaces.TanFort;
@@ -134,6 +135,32 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
     @Override
     public void registerNewProperty(TanProperty tanProperty) {
 
+        var point1 = tanProperty.getFirstCorner();
+        var point2 = tanProperty.getSecondCorner();
+
+        var boundaries = getPolygonCoordinate(point1, point2);
+
+        List<Point> pointList = getPoints(boundaries);
+
+
+        Color color = new Color(Constants.getPropertyColor(tanProperty));
+
+
+        MarkerOptions options = MarkerOptions.builder().
+                fillColor(color).
+                fillOpacity(0.4).
+                strokeColor(color).
+                strokeOpacity(0.7).
+                strokeWeight(2).
+                hoverTooltip(generateDescription(tanProperty)).
+                build();
+
+        Marker marker = Marker.polygon(pointList).markerOptions(options);
+
+
+
+        TanKey key = new TanKey(point1.getWorld());
+        propertiesLayerMap.get(key).addMarker(Key.of(tanProperty.getID()), marker);
     }
 
     @Override
@@ -190,6 +217,10 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
         for(SimpleLayerProvider layerProvider : fortLayerMap.values()) {
             layerProvider.clearMarkers();
         }
+        for(SimpleLayerProvider layerProvider : propertiesLayerMap.values()) {
+            layerProvider.clearMarkers();
+        }
+
     }
 
     @Override

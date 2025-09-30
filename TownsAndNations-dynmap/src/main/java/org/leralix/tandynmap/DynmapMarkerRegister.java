@@ -9,6 +9,7 @@ import org.leralix.lib.position.Vector2D;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
+import org.leralix.tancommon.storage.Constants;
 import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.tan.api.interfaces.*;
 
@@ -139,8 +140,13 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
                 x,
                 z,
                 false);
-        areaMarker.setLineStyle(0, 0.6, Color.GREEN.asBGR());
-        areaMarker.setFillStyle(0.6, Color.GREEN.asBGR());
+
+        int color = Constants.getPropertyColor(tanProperty);
+
+        areaMarker.setDescription(generateDescription(tanProperty));
+        areaMarker.setLineStyle(0, 0.4, color);
+        areaMarker.setFillStyle(0.7, color);
+
         areaMarker.setDescription("Chat");
     }
 
@@ -241,6 +247,9 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
             marker.deleteMarker();
         }
         for(AreaMarker areaMarker : fortMarkerSet.getAreaMarkers()){
+            areaMarker.deleteMarker();
+        }
+        for(AreaMarker areaMarker : propertiesMarkerSet.getAreaMarkers()){
             areaMarker.deleteMarker();
         }
     }

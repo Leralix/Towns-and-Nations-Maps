@@ -3,6 +3,7 @@ package org.leralix.tancommon.markers;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.leralix.lib.position.Vector2D;
+import org.leralix.lib.position.Vector3D;
 import org.leralix.lib.utils.config.ConfigTag;
 import org.leralix.lib.utils.config.ConfigUtil;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
@@ -143,4 +144,22 @@ public abstract class CommonMarkerRegister {
     public abstract void registerIcon(IconType iconType);
 
     public abstract void registerCapital(String townName, Vector2D capitalPosition);
+
+    protected static PolygonCoordinate getPolygonCoordinate(Vector3D point1, Vector3D point2) {
+        int[] x = new int[] {
+                point1.getX(),
+                point2.getX(),
+                point2.getX(),
+                point1.getX()
+        };
+
+        int[] z = new int[] {
+                point1.getZ(),
+                point1.getZ(),
+                point2.getZ(),
+                point2.getZ()
+        };
+
+        return new PolygonCoordinate(x, z);
+    }
 }

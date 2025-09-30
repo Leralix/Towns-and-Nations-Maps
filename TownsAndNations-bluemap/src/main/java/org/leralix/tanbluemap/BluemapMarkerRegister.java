@@ -48,7 +48,7 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
         this.chunkLayerMap = new HashMap<>();
         this.landmarkLayerMap = new HashMap<>();
         this.fortLayerMap = new HashMap<>();
-        propertyLayerMap = new HashMap<>();
+        this.propertyLayerMap = new HashMap<>();
     }
 
     @Override
@@ -150,21 +150,7 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
         int minY = Math.min(point1.getY(), point2.getY());
         int maxY = Math.max(point1.getY(), point2.getY());
 
-        int[] x = new int[] {
-                point1.getX(),
-                point2.getX(),
-                point2.getX(),
-                point1.getX()
-        };
-
-        int[] z = new int[] {
-                point1.getZ(),
-                point1.getZ(),
-                point2.getZ(),
-                point2.getZ()
-        };
-
-        var boundaries = new PolygonCoordinate(x, z);
+        var boundaries = getPolygonCoordinate(point1, point2);
         Shape shape = getVector(boundaries);
 
         Color fillColor = new Color(Constants.getPropertyColor(tanProperty), 0.4f);
@@ -217,7 +203,6 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
                 .build();
 
         this.chunkLayerMap.get(new TanKey(world)).getMarkers().put(polyid, shapeMarker);
-
     }
 
     private static Shape getVector(PolygonCoordinate coordinates) {
@@ -248,7 +233,11 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
                 marker.remove(id);
             }
         }
-
+        for (MarkerSet marker : propertyLayerMap.values()) {
+            for (String id : marker.getMarkers().keySet()) {
+                marker.remove(id);
+            }
+        }
     }
 
     @Override
