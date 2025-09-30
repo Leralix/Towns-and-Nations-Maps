@@ -22,39 +22,56 @@ public abstract class CommonMarkerRegister {
     public void setup() {
         FileConfiguration cfg = ConfigUtil.getCustomConfig(ConfigTag.MAIN);
 
-        String id = "townsandnations.landmarks";
-        String name = cfg.getString("landmark_layer.name", "Towns and Nations - Landmarks");
-        int minZoom = Math.max(cfg.getInt("landmark_layer.minimum_zoom", 0), 0);
-        int chunkLayerPriority = Math.max(cfg.getInt("landmark_layer.priority", 10), 0);
-        boolean hideByDefault = cfg.getBoolean("landmark_layer.hide_by_default", false);
-        List<String> worldsName = cfg.getStringList("landmark_layer.worlds");
-        setupLandmarkLayer(id, name, minZoom, chunkLayerPriority, hideByDefault, worldsName);
+        LayerConfig chunkLayerConfig = extractLayerData(cfg, "chunk_layer", "Territories");
+        setupChunkLayer(
+                chunkLayerConfig.getId(),
+                chunkLayerConfig.getName(),
+                chunkLayerConfig.getMinZoom(),
+                chunkLayerConfig.getPriority(),
+                chunkLayerConfig.isHideByDefault(),
+                chunkLayerConfig.getWorldsName()
+        );
 
+        LayerConfig landmarkLayerConfig = extractLayerData(cfg, "landmark_layer", "Landmarks");
+        setupLandmarkLayer(
+                landmarkLayerConfig.getId(),
+                landmarkLayerConfig.getName(),
+                landmarkLayerConfig.getMinZoom(),
+                landmarkLayerConfig.getPriority(),
+                landmarkLayerConfig.isHideByDefault(),
+                landmarkLayerConfig.getWorldsName()
+        );
 
-        String id2 = "townsandnations.chunks";
-        String name2 = cfg.getString("chunk_layer.name", "Towns and Nations - Territories");
-        int minZoom2 = Math.max(cfg.getInt("chunk_layer.minimum_zoom", 0), 0);
-        int chunkLayerPriority2 = Math.max(cfg.getInt("chunk_layer.priority", 10), 0);
-        boolean hideByDefault2 = cfg.getBoolean("chunk_layer.hide_by_default", false);
-        List<String> worldsName2 = cfg.getStringList("chunk_layer.worlds");
-        setupChunkLayer(id2, name2, minZoom2, chunkLayerPriority2, hideByDefault2, worldsName2);
+        LayerConfig fortLayerConfig = extractLayerData(cfg, "fort_layer", "Forts");
+        setupFortLayer(
+                fortLayerConfig.getId(),
+                fortLayerConfig.getName(),
+                fortLayerConfig.getMinZoom(),
+                fortLayerConfig.getPriority(),
+                fortLayerConfig.isHideByDefault(),
+                fortLayerConfig.getWorldsName()
+        );
 
-        String id3 = "townsandnations.forts";
-        String name3 = cfg.getString("fort_layer.name", "Towns and Nations - Forts");
-        int minZoom3 = Math.max(cfg.getInt("fort_layer.minimum_zoom", 0), 0);
-        int chunkLayerPriority3 = Math.max(cfg.getInt("fort_layer.priority", 10), 0);
-        boolean hideByDefault3 = cfg.getBoolean("fort_layer.hide_by_default", false);
-        List<String> worldsName3 = cfg.getStringList("fort_layer.worlds");
-        setupFortLayer(id3, name3, minZoom3, chunkLayerPriority3, hideByDefault3, worldsName3);
+        LayerConfig propertyLayerConfig = extractLayerData(cfg, "property_layer", "Properties");
+        setupPropertyLayer(
+                propertyLayerConfig.getId(),
+                propertyLayerConfig.getName(),
+                propertyLayerConfig.getMinZoom(),
+                propertyLayerConfig.getPriority(),
+                propertyLayerConfig.isHideByDefault(),
+                propertyLayerConfig.getWorldsName()
+        );
+    }
 
-        String id4 = "townsandnations.property_layer";
-        String name4 = cfg.getString("property_layer.name", "Towns and Nations - properties");
-        int minZoom4 = Math.max(cfg.getInt("property_layer.minimum_zoom", 0), 0);
-        int chunkLayerPriority4 = Math.max(cfg.getInt("property_layer.priority", 10), 0);
-        boolean hideByDefault4 = cfg.getBoolean("property_layer.hide_by_default", false);
-        List<String> worldsName4 = cfg.getStringList("property_layer.worlds");
-        setupPropertyLayer(id4, name4, minZoom4, chunkLayerPriority4, hideByDefault4, worldsName4);
+    private LayerConfig extractLayerData(FileConfiguration cfg, String configSectionName, String layerName) {
+        String id = "townsandnations." + layerName.toLowerCase();
+        String name = cfg.getString(configSectionName + ".name", "Towns and Nations - " + layerName);
+        int minZoom = Math.max(cfg.getInt(configSectionName + ".minimum_zoom", 0), 0);
+        int chunkLayerPriority = Math.max(cfg.getInt(configSectionName + ".priority", 10), 0);
+        boolean hideByDefault = cfg.getBoolean(configSectionName + ".hide_by_default", false);
+        List<String> worldsName = cfg.getStringList(configSectionName + ".worlds");
 
+        return new LayerConfig(id, name, minZoom, chunkLayerPriority, hideByDefault, worldsName);
     }
 
     protected abstract void setupLandmarkLayer(String id, String name, int minZoom, int chunkLayerPriority, boolean hideByDefault, List<String> worldsName);
@@ -103,19 +120,15 @@ public abstract class CommonMarkerRegister {
             return "No description";
 
         String status;
-        if(property.isForSale()){
+        if (property.isForSale()) {
             status = "For Sale (" + property.getSalePrice() + ")";
-        }
-        else if(property.isRented()){
+        } else if (property.isRented()) {
             status = "Rented by " + property.getRenter().get().getNameStored();
-        }
-        else if(property.isForRent()){
+        } else if (property.isForRent()) {
             status = "For Rent (" + property.getRentPrice() + ")";
-        }
-        else{
+        } else {
             status = "Not for sale or rent";
         }
-
 
 
         res = res.replace("%PROPERTY_NAME%", property.getName());
@@ -126,8 +139,7 @@ public abstract class CommonMarkerRegister {
         return res;
     }
 
-
-        protected String generateDescription(TanFort fort) {
+    protected String generateDescription(TanFort fort) {
 
         String res = TownsAndNationsMapCommon.getPlugin().getConfig().getString("fort_infowindow");
         if (res == null)
@@ -146,14 +158,14 @@ public abstract class CommonMarkerRegister {
     public abstract void registerCapital(String townName, Vector2D capitalPosition);
 
     protected static PolygonCoordinate getPolygonCoordinate(Vector3D point1, Vector3D point2) {
-        int[] x = new int[] {
+        int[] x = new int[]{
                 point1.getX(),
                 point2.getX(),
                 point2.getX(),
                 point1.getX()
         };
 
-        int[] z = new int[] {
+        int[] z = new int[]{
                 point1.getZ(),
                 point1.getZ(),
                 point2.getZ(),
