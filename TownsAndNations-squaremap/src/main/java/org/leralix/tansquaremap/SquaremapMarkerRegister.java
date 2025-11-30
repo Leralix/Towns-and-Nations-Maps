@@ -237,7 +237,20 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
         Marker marker = Marker.icon(point, Key.of(imageKey),16).markerOptions(markerOptions);
 
         TanKey key = new TanKey(capitalPosition.getWorld());
-        fortLayerMap.get(key).addMarker(Key.of(townName), marker);
+        String formattedName = format(townName);
+        fortLayerMap.get(key).addMarker(Key.of(formattedName), marker);
+    }
+
+    /**
+     * Remove all characters not in [a-zA-Z0-9._-]
+     * @param value the name
+     * @return the formatted name
+     */
+    private String format(String value) {
+        if (value == null) {
+            return "Empty name";
+        }
+        return value.replaceAll("[^a-zA-Z0-9._-]", "");
     }
 
     @Override
