@@ -133,7 +133,7 @@ public abstract class CommonMarkerRegister {
 
         res = res.replace("%PROPERTY_NAME%", property.getName());
         res = res.replace("%PROPERTY_DESCRIPTION%", property.getDescription());
-        res = res.replace("%PROPERTY_OWNER%", property.getOwner().getNameStored());
+        res = res.replace("%PROPERTY_OWNER%", property.getOwner().getName());
         res = res.replace("%STATUS%", status);
 
         return res;
