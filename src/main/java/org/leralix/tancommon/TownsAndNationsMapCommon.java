@@ -32,7 +32,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
     private final Logger logger = this.getLogger();
     private CommonMarkerRegister markerRegister;
     private long updatePeriod;
-    private final PluginVersion pluginVersion = new PluginVersion(0, 14, 0);
+    private final PluginVersion pluginVersion = new PluginVersion(0, 15, 0);
 
     private UpdateLandMarks updateLandMarks;
     private UpdateChunks updateChunks;
