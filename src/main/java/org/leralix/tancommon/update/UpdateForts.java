@@ -33,11 +33,12 @@ public class UpdateForts implements Runnable {
         for(TanFort fort : TanAPI.getInstance().getFortManager().getForts()) {
             markerRegister.registerNewFort(fort);
         }
+
         for(TanTown tanTown : TanAPI.getInstance().getTerritoryManager().getTowns()){
             Optional<Vector2D> optionalCapital = tanTown.getCapitalLocation();
-            optionalCapital.ifPresent(capitalPosition -> {
-                markerRegister.registerCapital(tanTown.getName(), capitalPosition);
-            });
+            if(optionalCapital.isPresent() && optionalCapital.get().getWorld() != null){
+                markerRegister.registerCapital(tanTown.getName(), optionalCapital.get());
+            }
         }
 
         Plugin plugin = TownsAndNationsMapCommon.getPlugin();
