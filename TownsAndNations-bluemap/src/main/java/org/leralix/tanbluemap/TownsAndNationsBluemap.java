@@ -12,7 +12,7 @@ public class TownsAndNationsBluemap extends TownsAndNationsMapCommon {
 
     @Override
     protected int getBStatID() {
-        return 24150;
+        return 28666;
     }
 
     @Override
