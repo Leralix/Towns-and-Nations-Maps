@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    maven {
+        name = "pl3xmap"
+        url 'https://api.modrinth.com/maven'
+    }
+}
+
+dependencies {
+    implementation project(path: ':')
+    compileOnly("maven.modrinth:pl3xmap:1.21.5-527")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
