@@ -4,7 +4,10 @@ import net.pl3x.map.core.Pl3xMap;
 import net.pl3x.map.core.image.IconImage;
 import net.pl3x.map.core.markers.Point;
 import net.pl3x.map.core.markers.layer.SimpleLayer;
-import net.pl3x.map.core.markers.marker.*;
+import net.pl3x.map.core.markers.marker.Icon;
+import net.pl3x.map.core.markers.marker.Marker;
+import net.pl3x.map.core.markers.marker.Polygon;
+import net.pl3x.map.core.markers.marker.Polyline;
 import net.pl3x.map.core.markers.option.Options;
 import net.pl3x.map.core.world.World;
 import org.bukkit.Bukkit;
@@ -13,6 +16,7 @@ import org.leralix.lib.position.Vector2D;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
+import org.leralix.tancommon.storage.Constants;
 import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.tan.api.interfaces.TanFort;
 import org.tan.api.interfaces.TanLandmark;
@@ -155,22 +159,39 @@ public class Pl3xmapMarkerRegister extends CommonMarkerRegister {
                 property.getFirstCorner().getZ()
         );
         Point point2 = Point.of(
+                property.getFirstCorner().getX(),
+                property.getSecondCorner().getZ()
+        );
+        Point point3 = Point.of(
                 property.getSecondCorner().getX(),
                 property.getSecondCorner().getZ()
+        );
+        Point point4 = Point.of(
+                property.getSecondCorner().getX(),
+                property.getFirstCorner().getZ()
         );
 
         var polyline = new Polyline(
                 property.getID(),
                 point1,
-                point2
+                point2,
+                point3,
+                point4
         );
 
         var polygon = Marker.polygon(
                 property.getID(),
                 polyline
         );
+
+        int color = Constants.getPropertyColor(property);
+        int fillColor = createARGB(color, 0.5);
+        int strokeColor = createARGB(color, 0.8);
+
         polygon.setOptions(
                 Options.builder()
+                        .fillColor(fillColor)
+                        .strokeColor(strokeColor)
                         .popupContent(generateDescription(property))
                         .build()
         );
@@ -195,18 +216,26 @@ public class Pl3xmapMarkerRegister extends CommonMarkerRegister {
             lines.add(new Polyline(polyId + "_" + idx++, toPoints(hole)));
         }
 
-        MultiPolygon polygon = Marker.multiPolygon(
-                polyId,
-                List.of(new Polygon(polyId, lines))
-        );
+        Polygon polygon = Marker.polygon(polyId, lines);
+
+        int fillColor = createARGB(territoryData.getColor().asRGB(), 0.5);
+        int strokeColor = createARGB(territoryData.getColor().asRGB(), 0.8);
 
         polygon.setOptions(
                 Options.builder()
+                        .fillColor(fillColor)
+                        .strokeColor(strokeColor)
                         .popupContent(popup)
                         .build()
         );
 
         layer.addMarker(polygon);
+    }
+
+    private int createARGB(int color, double transparency) {
+        int alpha = (int) (transparency * 255) << 24;
+        int rgb = color & 0x00FFFFFF;
+        return alpha | rgb;
     }
 
     private List<Point> toPoints(PolygonCoordinate coordinate) {
