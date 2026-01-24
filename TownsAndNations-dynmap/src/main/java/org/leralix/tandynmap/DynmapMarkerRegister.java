@@ -27,11 +27,11 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
     private final Set<TanTerritory> territoryAlreadyDrawn = new HashSet<>();
 
 
-    public DynmapMarkerRegister(){
+    public DynmapMarkerRegister() {
         Plugin plugin = TownsAndNationsDynmap.getPlugin().getServer().getPluginManager().getPlugin("dynmap");
-        if(plugin instanceof DynmapAPI dynmapAPI){
+        if (plugin instanceof DynmapAPI dynmapAPI) {
             this.dynmapLayerAPI = dynmapAPI.getMarkerAPI();
-        }else{
+        } else {
             this.dynmapLayerAPI = null;
         }
     }
@@ -110,21 +110,21 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
         String id = tanProperty.getID();
 
         AreaMarker areaMarker = propertiesMarkerSet.findAreaMarker(id);
-        if(areaMarker != null){
+        if (areaMarker != null) {
             areaMarker.deleteMarker();
         }
 
         var point1 = tanProperty.getFirstCorner();
         var point2 = tanProperty.getSecondCorner();
 
-        double[] x = new double[] {
+        double[] x = new double[]{
                 point1.getX(),
                 point2.getX(),
                 point2.getX(),
                 point1.getX()
         };
 
-        double[] z = new double[] {
+        double[] z = new double[]{
                 point1.getZ(),
                 point1.getZ(),
                 point2.getZ(),
@@ -148,7 +148,7 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
     }
 
     @Override
-    public void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, PolygonCoordinate coordinates, String infoWindowPopup, Collection<PolygonCoordinate> holes){
+    public void registerNewArea(String polyid, TanTerritory territoryData, boolean b, String worldName, PolygonCoordinate coordinates, String infoWindowPopup, Collection<PolygonCoordinate> holes) {
 
         Color chunkColor = territoryData.getColor();
 
@@ -158,12 +158,12 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
         //Draw chunks if not already drawn (because this method is called multiple times for the same territory if multiple polygons)
         int i = 0;
 
-        if(!territoryAlreadyDrawn.contains(territoryData)){
-            for(TanClaimedChunk chunk : territoryData.getClaimedChunks())   {
+        if (!territoryAlreadyDrawn.contains(territoryData)) {
+            for (TanClaimedChunk chunk : territoryData.getClaimedChunks()) {
 
                 String id = polyid + "_" + i;
                 AreaMarker areaMarker = chunkMarkerSet.findAreaMarker(id);
-                if(areaMarker != null){
+                if (areaMarker != null) {
                     areaMarker.deleteMarker();
                 }
 
@@ -199,34 +199,34 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
         }
 
 
-
-
         //Draw lines
         List<PolygonCoordinate> polygonLines = new ArrayList<>(holes);
         polygonLines.add(coordinates);
         i = 0;
-        for(PolygonCoordinate lines : polygonLines){
+        for (PolygonCoordinate lines : polygonLines) {
 
             String id = polyid + "_l" + i;
 
             PolyLineMarker polyLineMarker = chunkMarkerSet.findPolyLineMarker(id);
-            if(polyLineMarker != null){
+            if (polyLineMarker != null) {
                 polyLineMarker.deleteMarker();
             }
 
 
             double[] hx = loopCoordinates(lines.getX());
             double[] hz = loopCoordinates(lines.getZ());
+            double[] hy = new double[hx.length];
+            Arrays.fill(hy, 64);
             polyLineMarker = chunkMarkerSet.createPolyLineMarker(
                     id,
-                territoryData.getName() + "_line_" + i,
-                true,
-                worldName,
-                hx,
-                hz,
-                hz,
-                false
-                );
+                    territoryData.getName() + "_line_" + i,
+                    true,
+                    worldName,
+                    hx,
+                    hy,
+                    hz,
+                    false
+            );
             polyLineMarker.setLineStyle(2, 9, chunkColor.asRGB());
             i++;
         }
@@ -243,16 +243,16 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
     @Override
     public void deleteAllMarkers() {
         territoryAlreadyDrawn.clear();
-        for(AreaMarker areaMarker : chunkMarkerSet.getAreaMarkers()){
+        for (AreaMarker areaMarker : chunkMarkerSet.getAreaMarkers()) {
             areaMarker.deleteMarker();
         }
-        for(Marker marker : landmarkMarkerSet.getMarkers()){
+        for (Marker marker : landmarkMarkerSet.getMarkers()) {
             marker.deleteMarker();
         }
-        for(AreaMarker areaMarker : fortMarkerSet.getAreaMarkers()){
+        for (AreaMarker areaMarker : fortMarkerSet.getAreaMarkers()) {
             areaMarker.deleteMarker();
         }
-        for(AreaMarker areaMarker : propertiesMarkerSet.getAreaMarkers()){
+        for (AreaMarker areaMarker : propertiesMarkerSet.getAreaMarkers()) {
             areaMarker.deleteMarker();
         }
     }
@@ -269,7 +269,7 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
                 townName,
                 capitalPosition.getWorld().getName(),
                 capitalPosition.getX() * 16 + 8,
-                70,
+                64,
                 capitalPosition.getZ() * 16 + 8,
                 dynmapLayerAPI.getMarkerIcon(IconType.CAPITAL.getFileName()), true);
         marker.setDescription(townName);
