@@ -1,11 +1,11 @@
 package org.leralix.tancommon;
 
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.leralix.lib.data.PluginVersion;
-import org.leralix.lib.utils.config.ConfigTag;
 import org.leralix.lib.utils.config.ConfigUtil;
 import org.leralix.tancommon.bstat.Metrics;
 import org.leralix.tancommon.commands.PlayerCommandManager;
@@ -21,6 +21,7 @@ import org.leralix.tancommon.update.UpdateProperty;
 import org.tan.api.TanAPI;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -70,9 +71,8 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         }
         Objects.requireNonNull(getCommand("tanmap")).setExecutor(new PlayerCommandManager());
 
-        ConfigUtil.saveAndUpdateResource(this, "config.yml");
-        ConfigUtil.addCustomConfig(this, "config.yml", ConfigTag.MAIN);
-        Constants.init();
+        YamlConfiguration configuration = ConfigUtil.saveAndUpdateResource(this, "config.yml", Collections.emptyList());
+        Constants.init(configuration);
 
         initialise();
 

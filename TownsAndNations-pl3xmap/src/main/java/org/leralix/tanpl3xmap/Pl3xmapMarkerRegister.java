@@ -18,10 +18,10 @@ import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
 import org.leralix.tancommon.storage.Constants;
 import org.leralix.tancommon.storage.PolygonCoordinate;
-import org.tan.api.interfaces.TanFort;
-import org.tan.api.interfaces.TanLandmark;
-import org.tan.api.interfaces.TanProperty;
-import org.tan.api.interfaces.TanTerritory;
+import org.tan.api.interfaces.buildings.TanFort;
+import org.tan.api.interfaces.buildings.TanLandmark;
+import org.tan.api.interfaces.buildings.TanProperty;
+import org.tan.api.interfaces.territory.TanTerritory;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -134,10 +134,10 @@ public class Pl3xmapMarkerRegister extends CommonMarkerRegister {
     @Override
     public void registerNewFort(TanFort fort) {
 
-        var world = fort.getFlagPosition().getWorld();
+        var location = fort.getPosition();
+        var world = location.getWorld();
         if(world == null) return;
 
-        var location = fort.getFlagPosition();
         addIconMarker(
                 fortLayerMap,
                 world.getName(),

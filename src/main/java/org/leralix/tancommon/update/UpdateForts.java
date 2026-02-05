@@ -5,8 +5,8 @@ import org.leralix.lib.position.Vector2D;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.tan.api.TanAPI;
-import org.tan.api.interfaces.TanFort;
-import org.tan.api.interfaces.TanTown;
+import org.tan.api.interfaces.buildings.TanFort;
+import org.tan.api.interfaces.territory.TanTown;
 
 import java.util.Optional;
 

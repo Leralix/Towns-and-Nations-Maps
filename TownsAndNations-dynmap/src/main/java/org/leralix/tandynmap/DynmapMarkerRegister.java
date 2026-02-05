@@ -11,7 +11,11 @@ import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.markers.IconType;
 import org.leralix.tancommon.storage.Constants;
 import org.leralix.tancommon.storage.PolygonCoordinate;
-import org.tan.api.interfaces.*;
+import org.tan.api.interfaces.buildings.TanFort;
+import org.tan.api.interfaces.buildings.TanLandmark;
+import org.tan.api.interfaces.buildings.TanProperty;
+import org.tan.api.interfaces.chunk.TanClaimedChunk;
+import org.tan.api.interfaces.territory.TanTerritory;
 
 import java.util.*;
 
@@ -92,7 +96,7 @@ public class DynmapMarkerRegister extends CommonMarkerRegister {
             marker.deleteMarker();
         }
 
-        Location location = fort.getFlagPosition().getLocation();
+        Location location = fort.getPosition().getLocation();
         marker = fortMarkerSet.createMarker(
                 fort.getID(),
                 fort.getName(),

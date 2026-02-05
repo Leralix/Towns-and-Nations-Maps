@@ -1,9 +1,13 @@
 package org.leralix.tancommon.commands.subcommands;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.leralix.lib.commands.SubCommand;
+import org.leralix.lib.utils.config.ConfigUtil;
+import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.storage.Constants;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ReloadCommand extends SubCommand {
@@ -36,6 +40,7 @@ public class ReloadCommand extends SubCommand {
 
     @Override
     public void perform(CommandSender commandSender, String[] strings) {
-        Constants.init();
+        YamlConfiguration configuration = ConfigUtil.saveAndUpdateResource(TownsAndNationsMapCommon.getPlugin(), "config.yml", Collections.emptyList());
+        Constants.init(configuration);
     }
 }

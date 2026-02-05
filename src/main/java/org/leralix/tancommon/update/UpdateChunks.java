@@ -8,8 +8,8 @@ import org.leralix.tancommon.storage.RegionDescriptionStorage;
 import org.leralix.tancommon.storage.TownDescription;
 import org.leralix.tancommon.storage.TownDescriptionStorage;
 import org.tan.api.TanAPI;
-import org.tan.api.interfaces.TanRegion;
-import org.tan.api.interfaces.TanTown;
+import org.tan.api.interfaces.territory.TanRegion;
+import org.tan.api.interfaces.territory.TanTown;
 
 public class UpdateChunks implements Runnable {
 

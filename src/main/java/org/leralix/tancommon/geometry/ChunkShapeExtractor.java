@@ -3,7 +3,7 @@ package org.leralix.tancommon.geometry;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.leralix.tancommon.storage.TileFlags;
-import org.tan.api.interfaces.TanClaimedChunk;
+import org.tan.api.interfaces.chunk.TanClaimedChunk;
 
 import java.util.Collection;
 import java.util.HashMap;

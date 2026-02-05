@@ -4,8 +4,8 @@ import org.bukkit.plugin.Plugin;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.tan.api.TanAPI;
-import org.tan.api.interfaces.TanProperty;
-import org.tan.api.interfaces.TanTown;
+import org.tan.api.interfaces.buildings.TanProperty;
+import org.tan.api.interfaces.territory.TanTown;
 
 
 public class UpdateProperty implements Runnable {

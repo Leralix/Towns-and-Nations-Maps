@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.leralix.tancommon.storage.TileFlags;
 import org.mockito.MockedStatic;
-import org.tan.api.interfaces.TanClaimedChunk;
+import org.tan.api.interfaces.chunk.TanClaimedChunk;
 
 import java.util.*;
 

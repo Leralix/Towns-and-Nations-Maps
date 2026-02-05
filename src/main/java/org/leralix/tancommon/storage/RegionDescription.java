@@ -1,10 +1,13 @@
 package org.leralix.tancommon.storage;
 
 import org.leralix.tancommon.TownsAndNationsMapCommon;
-import org.tan.api.interfaces.TanRegion;
-import org.tan.api.interfaces.TanTerritory;
+import org.tan.api.interfaces.territory.TanRegion;
+import org.tan.api.interfaces.territory.TanTerritory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 public class RegionDescription {
 

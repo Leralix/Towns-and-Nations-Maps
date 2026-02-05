@@ -11,10 +11,10 @@ import org.leralix.tancommon.markers.IconType;
 import org.leralix.tancommon.storage.Constants;
 import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.leralix.tancommon.storage.TanKey;
-import org.tan.api.interfaces.TanFort;
-import org.tan.api.interfaces.TanLandmark;
-import org.tan.api.interfaces.TanProperty;
-import org.tan.api.interfaces.TanTerritory;
+import org.tan.api.interfaces.buildings.TanFort;
+import org.tan.api.interfaces.buildings.TanLandmark;
+import org.tan.api.interfaces.buildings.TanProperty;
+import org.tan.api.interfaces.territory.TanTerritory;
 import xyz.jpenilla.squaremap.api.*;
 import xyz.jpenilla.squaremap.api.Point;
 import xyz.jpenilla.squaremap.api.marker.Marker;
@@ -117,7 +117,7 @@ public class SquaremapMarkerRegister extends CommonMarkerRegister {
 
     @Override
     public void registerNewFort(TanFort fort) {
-        Location location = fort.getFlagPosition().getLocation();
+        Location location = fort.getPosition().getLocation();
         Point point = Point.of(location.getX(), location.getZ());
 
         MarkerOptions markerOptions = MarkerOptions.builder().

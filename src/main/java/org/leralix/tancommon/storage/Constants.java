@@ -1,9 +1,7 @@
 package org.leralix.tancommon.storage;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.leralix.lib.utils.config.ConfigTag;
-import org.leralix.lib.utils.config.ConfigUtil;
-import org.tan.api.interfaces.TanProperty;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.tan.api.interfaces.buildings.TanProperty;
 
 public class Constants {
 
@@ -17,9 +15,7 @@ public class Constants {
     private static int propertyRentedColor;
     private static int propertyForRentColor;
 
-    public static void init() {
-
-        FileConfiguration fileConfiguration = ConfigUtil.getCustomConfig(ConfigTag.MAIN);
+    public static void init(YamlConfiguration fileConfiguration) {
 
         updatePeriod = fileConfiguration.getInt("update.period", 300);
         maxIteration = fileConfiguration.getInt("polygon_max_points", 100000);

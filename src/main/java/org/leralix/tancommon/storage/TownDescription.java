@@ -2,8 +2,7 @@ package org.leralix.tancommon.storage;
 
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.tan.api.interfaces.TanPlayer;
-import org.tan.api.interfaces.TanTown;
-
+import org.tan.api.interfaces.territory.TanTown;
 
 import java.util.*;
 
@@ -34,7 +33,6 @@ public class TownDescription {
 
 
         int numberOfChunks = town.getNumberOfClaimedChunk();
-        int townLevel = town.getLevel();
         int nbPlayer = players.size();
         String description = town.getDescription();
         TanPlayer owner = town.getOwner();
@@ -43,9 +41,14 @@ public class TownDescription {
         else
             ownerName = owner.getNameStored();
 
-        String regionName = "No region";
-        if(town.haveOverlord())
-            regionName = town.getOverlord().getName();
+        var optOverlord = town.getOverlord();
+
+        if (optOverlord.isPresent()){
+            regionName = optOverlord.get().getName();
+        }
+        else {
+            regionName = "No region";
+        }
 
         List<String> playersName = new ArrayList<>();
         for(TanPlayer player : players){
@@ -58,9 +61,8 @@ public class TownDescription {
         this.daysSinceCreation = nbDays;
         this.description = description;
         this.numberOfClaims = numberOfChunks;
-        this.townLevel = townLevel;
+        this.townLevel = town.getLevel();
         this.numberOfMembers = nbPlayer;
-        this.regionName = regionName;
         this.nationName = name;
         this.membersName = playersName;
     }

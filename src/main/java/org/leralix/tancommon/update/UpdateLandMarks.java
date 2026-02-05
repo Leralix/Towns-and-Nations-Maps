@@ -1,10 +1,10 @@
 package org.leralix.tancommon.update;
 
 import org.bukkit.plugin.Plugin;
-import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
+import org.leralix.tancommon.markers.CommonMarkerRegister;
 import org.tan.api.TanAPI;
-import org.tan.api.interfaces.TanLandmark;
+import org.tan.api.interfaces.buildings.TanLandmark;
 
 
 public class UpdateLandMarks implements Runnable {

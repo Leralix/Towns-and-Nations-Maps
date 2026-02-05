@@ -7,10 +7,10 @@ import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.leralix.tancommon.storage.RegionDescriptionStorage;
 import org.leralix.tancommon.storage.TileFlags;
 import org.leralix.tancommon.storage.TownDescriptionStorage;
-import org.tan.api.interfaces.TanClaimedChunk;
-import org.tan.api.interfaces.TanRegion;
-import org.tan.api.interfaces.TanTerritory;
-import org.tan.api.interfaces.TanTown;
+import org.tan.api.interfaces.chunk.TanClaimedChunk;
+import org.tan.api.interfaces.territory.TanRegion;
+import org.tan.api.interfaces.territory.TanTerritory;
+import org.tan.api.interfaces.territory.TanTown;
 
 import java.util.ArrayDeque;
 import java.util.Collection;
