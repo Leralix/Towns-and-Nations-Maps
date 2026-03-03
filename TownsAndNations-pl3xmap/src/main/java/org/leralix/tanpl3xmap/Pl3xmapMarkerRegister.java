@@ -151,8 +151,11 @@ public class Pl3xmapMarkerRegister extends CommonMarkerRegister {
 
     @Override
     public void registerNewProperty(TanProperty property) {
+
         var world = property.getFirstCorner().getWorld();
         if(world == null) return;
+        SimpleLayer layer = chunkLayerMap.get(world.getName());
+        if (layer == null) return;
 
         Point point1 = Point.of(
                 property.getFirstCorner().getX(),
@@ -195,7 +198,7 @@ public class Pl3xmapMarkerRegister extends CommonMarkerRegister {
                         .popupContent(generateDescription(property))
                         .build()
         );
-        propertyLayerMap.get(world.getName()).addMarker(polygon);
+        layer.addMarker(polygon);
     }
 
 

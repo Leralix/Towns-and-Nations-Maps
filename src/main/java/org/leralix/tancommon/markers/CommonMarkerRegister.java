@@ -1,11 +1,10 @@
 package org.leralix.tancommon.markers;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.leralix.lib.position.Vector2D;
 import org.leralix.lib.position.Vector3D;
-import org.leralix.lib.utils.config.ConfigTag;
-import org.leralix.lib.utils.config.ConfigUtil;
 import org.leralix.tancommon.TownsAndNationsMapCommon;
 import org.leralix.tancommon.storage.PolygonCoordinate;
 import org.tan.api.interfaces.buildings.TanFort;
@@ -19,8 +18,7 @@ import java.util.List;
 public abstract class CommonMarkerRegister {
 
 
-    public void setup() {
-        FileConfiguration cfg = ConfigUtil.getCustomConfig(ConfigTag.MAIN);
+    public void setup(YamlConfiguration cfg) {
 
         LayerConfig chunkLayerConfig = extractLayerData(cfg, "chunk_layer", "Territories");
         setupChunkLayer(

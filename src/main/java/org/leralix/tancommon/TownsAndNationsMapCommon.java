@@ -1,10 +1,12 @@
 package org.leralix.tancommon;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.leralix.lib.SphereLib;
 import org.leralix.lib.data.PluginVersion;
 import org.leralix.lib.utils.config.ConfigUtil;
 import org.leralix.tancommon.bstat.Metrics;
@@ -21,7 +23,7 @@ import org.leralix.tancommon.update.UpdateProperty;
 import org.tan.api.TanAPI;
 
 import java.io.File;
-import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,15 +73,15 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         }
         Objects.requireNonNull(getCommand("tanmap")).setExecutor(new PlayerCommandManager());
 
-        YamlConfiguration configuration = ConfigUtil.saveAndUpdateResource(this, "config.yml", Collections.emptyList());
+        YamlConfiguration configuration = ConfigUtil.saveAndUpdateResource(this, "config.yml", List.of("worlds"));
         Constants.init(configuration);
 
-        initialise();
+        initialise(configuration);
 
         logger.info(subMapName + "Plugin is running");
     }
 
-    private void initialise() {
+    private void initialise(YamlConfiguration configuration) {
 
         markerRegister = createMarkerRegister();
         registerIcons(markerRegister);
@@ -89,7 +91,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    initialise();
+                    initialise(configuration);
                 }
             }.runTaskLater(this, 100);
             return;
@@ -101,7 +103,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         if (period < 15) period = 15;
         updatePeriod = period * 20L;
 
-        markerRegister.setup();
+        markerRegister.setup(configuration);
         startTasks();
     }
 
