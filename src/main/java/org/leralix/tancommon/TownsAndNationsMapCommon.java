@@ -36,6 +36,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
     private CommonMarkerRegister markerRegister;
     private long updatePeriod;
     private final PluginVersion pluginVersion = new PluginVersion(0, 16, 0);
+    private static final PluginVersion MINIMUM_SUPPORTING_SPHERELIB = new PluginVersion(0, 6, 3);
 
     private UpdateLandMarks updateLandMarks;
     private UpdateChunks updateChunks;
@@ -60,6 +61,14 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         if (tanPlugin == null || !tanPlugin.isEnabled()) {
             logger.severe(subMapName + "Cannot find Towns and Nations, check your logs to see if it enabled properly?!");
             setEnabled(false);
+            return;
+        }
+
+        if (SphereLib.getPluginVersion().isOlderThan(MINIMUM_SUPPORTING_SPHERELIB)) {
+            getLogger().log(Level.SEVERE, "[TaN] You need to update SphereLib to use this version of Towns and Nations - Maps");
+            getLogger().log(Level.SEVERE, "[TaN] Please update SphereLib to version {0} or higher", MINIMUM_SUPPORTING_SPHERELIB);
+            getLogger().log(Level.SEVERE, "[TaN] Disabling plugin");
+            Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
