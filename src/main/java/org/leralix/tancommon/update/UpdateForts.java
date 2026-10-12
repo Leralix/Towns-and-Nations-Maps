@@ -31,19 +31,22 @@ public class UpdateForts implements Runnable {
     public void update(){
 
         for(TanFort fort : TanAPI.getInstance().getFortManager().getForts()) {
-            markerRegister.registerNewFort(fort);
+            try {
+                markerRegister.registerNewFort(fort);
+            } catch (Exception e) {
+                TownsAndNationsMapCommon.getPlugin().getLogger().warning("Could not register fort " + fort.getName() + ": " + e);
+            }
         }
 
         for(TanTown tanTown : TanAPI.getInstance().getTerritoryManager().getTowns()){
             Optional<Vector2D> optionalCapital = tanTown.getCapitalLocation();
             if(optionalCapital.isPresent() && optionalCapital.get().getWorld() != null){
-                markerRegister.registerCapital(tanTown.getName(), optionalCapital.get());
+                try {
+                    markerRegister.registerCapital(tanTown.getName(), optionalCapital.get());
+                } catch (Exception e) {
+                    TownsAndNationsMapCommon.getPlugin().getLogger().warning("Could not register capital of " + tanTown.getName() + ": " + e);
+                }
             }
-        }
-
-        Plugin plugin = TownsAndNationsMapCommon.getPlugin();
-        if(updatePeriod > 0) {
-            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this, updatePeriod);
         }
     }
 }

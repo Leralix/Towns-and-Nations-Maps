@@ -83,6 +83,13 @@ public abstract class CommonMarkerRegister {
 
     public abstract boolean isWorking();
 
+    /**
+     * Called periodically. Implementations should re-attach layers / icons if the map plugin
+     * dropped them (e.g. after a map plugin reload). Must be cheap when nothing is wrong.
+     */
+    public void refresh() {
+    }
+
     public abstract void registerNewLandmark(TanLandmark landmark);
 
     public abstract void registerNewFort(TanFort fort);

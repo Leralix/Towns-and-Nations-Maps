@@ -48,11 +48,5 @@ public class UpdateChunks implements Runnable {
             RegionDescriptionStorage.add(regionDescription);
             chunkManager.update(regionData);
         }
-
-
-        Plugin plugin = TownsAndNationsMapCommon.getPlugin();
-        if(updatePeriod > 0)
-            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new UpdateChunks(this), updatePeriod);
-
     }
 }

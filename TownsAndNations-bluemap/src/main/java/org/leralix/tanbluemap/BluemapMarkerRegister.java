@@ -35,7 +35,11 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
 
     private static final String PATH = "assets/TownsAndNations/";
 
-    private BlueMapAPI api;
+    private volatile BlueMapAPI api;
+
+    /** Every layer we created, so it can be re-attached after "/bluemap reload". */
+    private record Layer(String id, World world, MarkerSet set) {}
+    private final List<Layer> layers = new java.util.concurrent.CopyOnWriteArrayList<>();
 
     private final Map<TanKey, MarkerSet> chunkLayerMap;
     private final Map<TanKey, MarkerSet> landmarkLayerMap;
@@ -44,7 +48,14 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
 
     public BluemapMarkerRegister() {
         super();
-        BlueMapAPI.onEnable(bluemapApi -> this.api = bluemapApi);
+        BlueMapAPI.onEnable(bluemapApi -> {
+            this.api = bluemapApi;
+            // /bluemap reload creates brand-new (empty) maps: re-attach our existing marker sets.
+            for (Layer layer : layers) {
+                attach(layer);
+            }
+        });
+        BlueMapAPI.onDisable(bluemapApi -> this.api = null);
         this.chunkLayerMap = new HashMap<>();
         this.landmarkLayerMap = new HashMap<>();
         this.fortLayerMap = new HashMap<>();
@@ -91,14 +102,23 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
 
             layerMap.put(new TanKey(bukkitWorld), markerSet);
 
-            api.getWorld(bukkitWorld).ifPresent(world -> {
-                for (BlueMapMap map : world.getMaps()) {
-                    map.getMarkerSets().put(id, markerSet);
-                }
-            });
+            Layer layer = new Layer(id, bukkitWorld, markerSet);
+            layers.add(layer);
+            attach(layer);
         }
 
     }
+
+    private void attach(Layer layer) {
+        BlueMapAPI current = this.api;
+        if (current == null) return;
+        current.getWorld(layer.world()).ifPresent(world -> {
+            for (BlueMapMap map : world.getMaps()) {
+                map.getMarkerSets().put(layer.id(), layer.set());
+            }
+        });
+    }
+
 
     @Override
     public boolean isWorking() {
@@ -219,22 +239,22 @@ public class BluemapMarkerRegister extends CommonMarkerRegister {
     @Override
     public void deleteAllMarkers() {
         for (MarkerSet marker : chunkLayerMap.values()) {
-            for (String id : marker.getMarkers().keySet()) {
+            for (String id : new ArrayList<>(marker.getMarkers().keySet())) {
                 marker.remove(id);
             }
         }
         for (MarkerSet marker : landmarkLayerMap.values()) {
-            for (String id : marker.getMarkers().keySet()) {
+            for (String id : new ArrayList<>(marker.getMarkers().keySet())) {
                 marker.remove(id);
             }
         }
         for (MarkerSet marker : fortLayerMap.values()) {
-            for (String id : marker.getMarkers().keySet()) {
+            for (String id : new ArrayList<>(marker.getMarkers().keySet())) {
                 marker.remove(id);
             }
         }
         for (MarkerSet marker : propertyLayerMap.values()) {
-            for (String id : marker.getMarkers().keySet()) {
+            for (String id : new ArrayList<>(marker.getMarkers().keySet())) {
                 marker.remove(id);
             }
         }

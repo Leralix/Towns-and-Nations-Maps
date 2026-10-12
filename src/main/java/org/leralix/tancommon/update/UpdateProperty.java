@@ -37,11 +37,6 @@ public class UpdateProperty implements Runnable {
                 set.registerNewProperty(tanProperty);
             }
         }
-
-        Plugin plugin = TownsAndNationsMapCommon.getPlugin();
-        if(updatePeriod > 0) {
-            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new UpdateProperty(this), updatePeriod);
-        }
     }
 
 }

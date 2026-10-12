@@ -34,11 +34,6 @@ public class UpdateLandMarks implements Runnable {
         for(TanLandmark landmark : TanAPI.getInstance().getLandmarkManager().getLandmarks()) {
             set.registerNewLandmark(landmark);
         }
-
-        Plugin plugin = TownsAndNationsMapCommon.getPlugin();
-        if(updatePeriod > 0) {
-            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new UpdateLandMarks(this), updatePeriod);
-        }
     }
 
 }

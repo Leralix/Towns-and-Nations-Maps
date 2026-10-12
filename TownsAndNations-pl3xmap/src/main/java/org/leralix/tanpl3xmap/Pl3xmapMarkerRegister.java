@@ -40,6 +40,12 @@ public class Pl3xmapMarkerRegister extends CommonMarkerRegister {
     private final Map<String, SimpleLayer> fortLayerMap = new ConcurrentHashMap<>();
     private final Map<String, SimpleLayer> propertyLayerMap = new ConcurrentHashMap<>();
 
+    /** Everything needed to (re)create a layer, so it can be restored after "/pl3xmap reload". */
+    private record LayerSpec(String id, String name, int priority, boolean hidden,
+                             List<String> worlds, Map<String, SimpleLayer> target) {}
+    private final List<LayerSpec> layerSpecs = new java.util.concurrent.CopyOnWriteArrayList<>();
+    private final List<IconType> registeredIcons = new java.util.concurrent.CopyOnWriteArrayList<>();
+
 
     public Pl3xmapMarkerRegister() {
         this.api = Pl3xMap.api();
@@ -75,33 +81,73 @@ public class Pl3xmapMarkerRegister extends CommonMarkerRegister {
 
     private void createLayers(String id, String name, int priority,
                               boolean hidden, List<String> worldsName, Map<String, SimpleLayer> layers) {
-        if(worldsName.contains("all")) {
-            worldsName = new ArrayList<>();
+        List<String> worlds = new ArrayList<>();
+        if(worldsName.contains("all") || worldsName.isEmpty()) {
             for (var world : Bukkit.getWorlds()) {
-                worldsName.add(world.getName());
+                worlds.add(world.getName());
             }
+        } else {
+            worlds.addAll(worldsName);
         }
 
-        for (String worldName : worldsName) {
+        LayerSpec spec = new LayerSpec(id, name, priority, hidden, worlds, layers);
+        layerSpecs.add(spec);
+        ensureLayers(spec);
+    }
 
-
+    /**
+     * Makes sure the layer of this spec is registered in every Pl3xMap world.
+     * If Pl3xMap dropped it (reload) a fresh layer is registered and the previous markers are copied over.
+     */
+    private void ensureLayers(LayerSpec spec) {
+        for (String worldName : spec.worlds()) {
             World world = Pl3xMap.api().getWorldRegistry().get(worldName);
             if (world == null) {
+                continue; // not (yet) known to Pl3xMap, retried by refresh()
+            }
+            if (world.getLayerRegistry().has(spec.id())) {
                 continue;
             }
 
-            SimpleLayer layer = new SimpleLayer(id, () -> name);
-            layer.setPriority(priority);
-            layer.setDefaultHidden(hidden);
+            SimpleLayer layer = new SimpleLayer(spec.id(), spec::name);
+            layer.setPriority(spec.priority());
+            layer.setDefaultHidden(spec.hidden());
+
+            SimpleLayer old = spec.target().get(worldName);
+            if (old != null) {
+                for (Marker marker : new ArrayList<>(old.registeredMarkers().values())) {
+                    layer.addMarker(marker);
+                }
+            }
 
             world.getLayerRegistry().register(layer);
-            layers.put(worldName, layer);
+            spec.target().put(worldName, layer);
         }
     }
 
     /* --------------------------------------------------------------------- */
     /* State                                                                 */
     /* --------------------------------------------------------------------- */
+
+    /**
+     * Re-registers icons and layers that Pl3xMap dropped (e.g. after "/pl3xmap reload").
+     * Markers of the dropped layers are copied into the new ones, so they reappear immediately.
+     */
+    @Override
+    public void refresh() {
+        try {
+            for (IconType iconType : registeredIcons) {
+                if (!Pl3xMap.api().getIconRegistry().has(iconType.getFileName())) {
+                    registerIcon(iconType);
+                }
+            }
+            for (LayerSpec spec : layerSpecs) {
+                ensureLayers(spec);
+            }
+        } catch (Exception ex) {
+            TownsAndNationsMapCommon.getPlugin().getLogger().warning("Pl3xMap refresh failed: " + ex);
+        }
+    }
 
     @Override
     public boolean isWorking() {
@@ -154,7 +200,7 @@ public class Pl3xmapMarkerRegister extends CommonMarkerRegister {
 
         var world = property.getFirstCorner().getWorld();
         if(world == null) return;
-        SimpleLayer layer = chunkLayerMap.get(world.getName());
+        SimpleLayer layer = propertyLayerMap.get(world.getName());
         if (layer == null) return;
 
         Point point1 = Point.of(
@@ -283,6 +329,9 @@ public class Pl3xmapMarkerRegister extends CommonMarkerRegister {
 
     @Override
     public void registerIcon(IconType iconType) {
+        if (!registeredIcons.contains(iconType)) {
+            registeredIcons.add(iconType);
+        }
         try (var stream = TownsAndNationsMapCommon.getPlugin().getResource("icons/" + iconType.getFileName())) {
             if(stream == null) {
                 throw new IOException("Icon resource not found: " + iconType.getFileName());
@@ -305,8 +354,8 @@ public class Pl3xmapMarkerRegister extends CommonMarkerRegister {
                 fortLayerMap,
                 capitalPosition.getWorld().getName(),
                 "capital_" + townName,
-                capitalPosition.getX(),
-                capitalPosition.getZ(),
+                capitalPosition.getX()*16.0+8.0,
+                capitalPosition.getZ()*16.0+8.0,
                 IconType.CAPITAL,
                 townName
         );

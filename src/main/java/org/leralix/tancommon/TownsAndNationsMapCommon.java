@@ -144,10 +144,19 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
         Runnable deleteAllRunnable = () -> markerRegister.deleteAllMarkers();
 
         getServer().getScheduler().scheduleSyncDelayedTask(this, deleteAllRunnable, 40);
-        getServer().getScheduler().scheduleSyncDelayedTask(this, updateChunks, 40);
-        getServer().getScheduler().scheduleSyncDelayedTask(this, updateLandMarks, 40);
+        // Each update class no longer reschedules itself: exactly one repeating task each.
+        // refresh() runs first in every cycle (cheap check, re-attaches layers/icons if the map plugin dropped them).
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            markerRegister.refresh();
+            updateChunks.run();
+        }, 40, updatePeriod);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, updateLandMarks, 40, updatePeriod);
         getServer().getScheduler().scheduleSyncRepeatingTask(this, updateForts, 40, updatePeriod);
-        getServer().getScheduler().scheduleSyncDelayedTask(this, updateProperty, 40);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, updateProperty, 40, updatePeriod);
+    }
+
+    protected CommonMarkerRegister getMarkerRegister() {
+        return markerRegister;
     }
 
     public static TownsAndNationsMapCommon getPlugin() {
@@ -155,6 +164,7 @@ public abstract class TownsAndNationsMapCommon extends JavaPlugin {
     }
 
     public void updateDynmap() {
+        markerRegister.refresh();
         markerRegister.deleteAllMarkers();
         updateChunks.update();
         updateLandMarks.update();
